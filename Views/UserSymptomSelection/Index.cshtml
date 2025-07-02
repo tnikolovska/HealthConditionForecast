@@ -1,0 +1,64 @@
+﻿@model IEnumerable<HealthConditionForecast.Models.UserSymptomSelection>
+
+@{
+    ViewData["Title"] = "User Symptom Selections";
+}
+
+<h1>User Symptom Selections</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Arthritis Symptoms</th>
+            <th>Migraine Symptoms</th>
+            <th>Sinus Symptoms</th>
+            <th></th> <!-- Actions -->
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @if (item.ArthritisSymptoms != null && item.ArthritisSymptoms.Any())
+                    {
+                        @string.Join(", ", item.ArthritisSymptoms.Select(s => s.Name))
+                    }
+                    else
+                    {
+                        <em>None</em>
+                    }
+                </td>
+                <td>
+                    @if (item.MigraineSymptoms != null && item.MigraineSymptoms.Any())
+                    {
+                        @string.Join(", ", item.MigraineSymptoms.Select(s => s.Name))
+                    }
+                    else
+                    {
+                        <em>None</em>
+                    }
+                </td>
+                <td>
+                    @if (item.SinusSymptoms != null && item.SinusSymptoms.Any())
+                    {
+                        @string.Join(", ", item.SinusSymptoms.Select(s => s.Name))
+                    }
+                    else
+                    {
+                        <em>None</em>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Selection</a>
+</p>

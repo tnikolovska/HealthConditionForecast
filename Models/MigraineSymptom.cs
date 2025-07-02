@@ -2,11 +2,6 @@
 {
     public class MigraineSympton : Symptom
     {
-        public enum MigraineType
-        {
-            BeforeHeadache,
-            MigraineWithAura,
-            DuringAttack
-        }
-}
+        public MigraineType Type { get; set; }
+    }
 }

@@ -1,12 +1,14 @@
-﻿@model HealthConditionForecast.Models.Symptom
+﻿@model HealthConditionForecast.Models.MigraineSympton
 
 @{
-    ViewData["Title"] = "Create Symptom";
+    ViewData["Title"] = "Edit Migraine Symptom";
 }
 
-<h1>Create Symptom</h1>
+<h1>Edit Migraine Symptom</h1>
 
-<form asp-action="Create" method="post">
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+
     <div class="form-group">
         <label asp-for="Name"></label>
         <input asp-for="Name" class="form-control" />
@@ -20,6 +22,12 @@
     </div>
 
     <div class="form-group">
+        <label asp-for="Type"></label>
+        <select asp-for="Type" class="form-control" asp-items="ViewBag.MigraineType"></select>
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
         <label asp-for="HealthConditionId"></label>
         <select asp-for="HealthConditionId" class="form-control" asp-items="ViewBag.HealthConditionId">
             <option value="">-- Select Health Condition --</option>
@@ -27,8 +35,8 @@
         <span asp-validation-for="HealthConditionId" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">Create</button>
-    <a asp-controller="HealthCondition" asp-action="Index" class="btn btn-secondary">Cancel</a>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
 </form>
 
 @section Scripts {

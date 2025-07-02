@@ -1,0 +1,20 @@
+﻿@model HealthConditionForecast.Models.UserSymptomSelection
+
+@{
+    ViewData["Title"] = "Delete Symptom Selection";
+}
+
+<h1>Delete Symptom Selection</h1>
+
+<h4>Are you sure you want to delete this selection?</h4>
+
+<div class="card p-3 mt-3">
+    <dl class="row">
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>

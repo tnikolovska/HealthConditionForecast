@@ -3,6 +3,7 @@ using System;
 using HealthConditionForecast.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HealthConditionForecast.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250702130843_MigraineSymptoms")]
+    partial class MigraineSymptoms
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.6");
@@ -120,11 +123,18 @@ namespace HealthConditionForecast.Migrations
                     b.Property<int>("HealthConditionId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<long>("HealthConditionId1")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("HealthConditionId1");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserHealthConditions");
                 });
@@ -138,7 +148,12 @@ namespace HealthConditionForecast.Migrations
                     b.Property<int>("UserHealthConditionId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<long>("UserHealthConditionId1")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserHealthConditionId1");
 
                     b.ToTable("UserSymptomSelections");
                 });
@@ -419,6 +434,36 @@ namespace HealthConditionForecast.Migrations
                         .HasForeignKey("HealthConditionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("HealthConditionForecast.Models.UserHealthCondition", b =>
+                {
+                    b.HasOne("HealthConditionForecast.Models.HealthCondition", "HealthCondition")
+                        .WithMany()
+                        .HasForeignKey("HealthConditionId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HealthConditionForecast.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("HealthCondition");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("HealthConditionForecast.Models.UserSymptomSelection", b =>
+                {
+                    b.HasOne("HealthConditionForecast.Models.UserHealthCondition", "UserHealthCondition")
+                        .WithMany()
+                        .HasForeignKey("UserHealthConditionId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserHealthCondition");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

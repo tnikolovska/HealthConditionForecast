@@ -2,6 +2,8 @@
 using HealthConditionForecast.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Elfie.Model.Structures;
 using Microsoft.EntityFrameworkCore;
 
 namespace HealthConditionForecast.Controllers
@@ -35,29 +37,30 @@ namespace HealthConditionForecast.Controllers
         }
 
         // GET: SymptomController/Create
-        public ActionResult Create(long? healthConditionId)
+        public IActionResult Create()
         {
-            if (healthConditionId == null)
-                return BadRequest("HealthConditionId is required");
-            ViewBag.HealthConditionId = healthConditionId;
+            // Populate dropdown with health conditions
+            ViewData["HealthConditionId"] = new SelectList(_context.HealthConditions, "Id", "Name");
             return View();
         }
 
-        // POST: SymptomController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind("Name,Description,HealthConditionId")] Symptom symptom)
+        public async Task<IActionResult> Create([Bind("Name,Description,HealthConditionId")] Symptom symptom)
         {
-            
-                if (ModelState.IsValid)
-                {
-                    _context.Symptoms.Add(symptom);
-                    _context.SaveChangesAsync();
-                    return RedirectToAction("Details", "HealthCondition", new { id = symptom.HealthConditionId });
-                }
-                //return RedirectToAction(nameof(Index));
-                return View(symptom);
-            
+           // HealthCondition healthCondition = await _context.HealthConditions.FirstOrDefaultAsync(healthCondition => healthCondition.Id == symptom.HealthConditionId);
+            //symptom.HealthCondition = healthCondition;
+            if (ModelState.IsValid)
+            {
+                
+                _context.Symptoms.Add(symptom);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index", "HealthCondition"); // or wherever you want
+            }
+
+            // Repopulate dropdown if model is invalid
+            ViewData["HealthConditionId"] = new SelectList(_context.HealthConditions, "Id", "Name", symptom.HealthConditionId);
+            return View(symptom);
         }
 
         // GET: SymptomController/Edit/5

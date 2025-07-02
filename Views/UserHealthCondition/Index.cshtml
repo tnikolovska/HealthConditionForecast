@@ -1,0 +1,23 @@
+﻿@model IEnumerable<HealthConditionForecast.Models.UserHealthCondition>
+
+@{
+    ViewData["Title"] = "User Health Conditions";
+}
+
+<h1>User Health Conditions</h1>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Health Condition</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+            </tr>
+        }
+    </tbody>
+</table>

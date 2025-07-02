@@ -1,0 +1,52 @@
+﻿@model HealthConditionForecast.Models.UserSymptomSelection
+
+@{
+    ViewData["Title"] = "Edit Symptom Selection";
+    var uhcId = ViewData["UserHealthConditionId"];
+}
+
+<h1>Edit Symptom Selection</h1>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="UserHealthConditionId" value="@uhcId" />
+
+    <div class="form-group">
+        <label>Arthritis Symptoms</label>
+        <select name="selectedArthritisSymptoms" multiple class="form-control">
+            @foreach (var item in (MultiSelectList)ViewBag.ArthritisSymptoms)
+            {
+                <option value="@item.Value" selected="@item.Selected">@item.Text</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Migraine Symptoms</label>
+        <select name="selectedMigraineSymptoms" multiple class="form-control">
+            @foreach (var item in (MultiSelectList)ViewBag.MigraineSymptoms)
+            {
+                <option value="@item.Value" selected="@item.Selected">@item.Text</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Sinus Symptoms</label>
+        <select name="selectedSinusSymptoms" multiple class="form-control">
+            @foreach (var item in (MultiSelectList)ViewBag.SinusSymptoms)
+            {
+                <option value="@item.Value" selected="@item.Selected">@item.Text</option>
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
