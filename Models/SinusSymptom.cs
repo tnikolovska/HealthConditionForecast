@@ -2,10 +2,6 @@
 {
     public class SinusSymptom:Symptom
     {
-        public enum SinusType
-        {
-           Minor,
-           Major
-        }
+        public SinusType Type { get; set; }
     }
 }

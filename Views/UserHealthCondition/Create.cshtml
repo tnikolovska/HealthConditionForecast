@@ -1,0 +1,30 @@
+﻿@model HealthConditionForecast.Models.UserHealthCondition
+
+@{
+    ViewData["Title"] = "Assign Health Condition to User";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="UserId" class="control-label">User</label>
+        <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
+        <span asp-validation-for="UserId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="HealthConditionId" class="control-label">Health Condition</label>
+        <select asp-for="HealthConditionId" class="form-control" asp-items="ViewBag.HealthConditionId"></select>
+        <span asp-validation-for="HealthConditionId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Assign</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,61 @@
+﻿@model HealthConditionForecast.Models.UserSymptomSelection
+
+@{
+    ViewData["Title"] = "User Symptom Selection Details";
+}
+
+<h1>User Symptom Selection</h1>
+
+<div class="card p-3">
+    <dl class="row">
+    </dl>
+
+    <hr />
+
+    <h4>Arthritis Symptoms</h4>
+    @if (Model.ArthritisSymptoms != null && Model.ArthritisSymptoms.Any())
+    {
+        <ul>
+            @foreach (var s in Model.ArthritisSymptoms)
+            {
+                <li>@s.Name - @s.Description</li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p><i>No arthritis symptoms selected.</i></p>
+    }
+
+    <h4>Migraine Symptoms</h4>
+    @if (Model.MigraineSymptoms != null && Model.MigraineSymptoms.Any())
+    {
+        <ul>
+            @foreach (var s in Model.MigraineSymptoms)
+            {
+                <li>@s.Name - @s.Description (@s.Type)</li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p><i>No migraine symptoms selected.</i></p>
+    }
+
+    <h4>Sinus Symptoms</h4>
+    @if (Model.SinusSymptoms != null && Model.SinusSymptoms.Any())
+    {
+        <ul>
+            @foreach (var s in Model.SinusSymptoms)
+            {
+                <li>@s.Name - @s.Description</li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p><i>No sinus symptoms selected.</i></p>
+    }
+
+    <a asp-action="Index" class="btn btn-secondary mt-3">Back to List</a>
+</div>
