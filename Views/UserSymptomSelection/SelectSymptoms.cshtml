@@ -5,11 +5,95 @@
 
 <h1>Select @conditionType Symptoms</h1>
 
-<form method="post" asp-action="Create" asp-route-healthConditionId="@ViewData["HealthConditionId"]">
+<form method="post" asp-action="SelectSymptoms" asp-route-userHealthConditionId="@ViewData["userHealthConditionId"]">
     <div class="form-group">
-        @if (conditionType != "None")
+        @if (conditionType == "Migraine")
         {
             <label>Select @conditionType Symptoms</label>
+            
+            <div>
+                <label>Before Headache Symptoms</label>
+                @foreach (var item in (MultiSelectList)ViewBag.BeforeHeadache)
+                {
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox"
+                               name="selectedSymptoms"
+                               value="@item.Value"
+                               id="symptom_@item.Value" />
+                        <label class="form-check-label" for="symptom_@item.Value">
+                            @item.Text
+                        </label>
+                    </div>
+                }
+            </div>
+            <div>
+                <label>Migraine with aura symptoms</label>
+                @foreach (var item in (MultiSelectList)ViewBag.MigraineWithAura)
+                {
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox"
+                               name="selectedSymptoms"
+                               value="@item.Value"
+                               id="symptom_@item.Value" />
+                        <label class="form-check-label" for="symptom_@item.Value">
+                            @item.Text
+                        </label>
+                    </div>
+                }
+            </div>
+            <div>
+                <label>During attack symptoms</label>
+                @foreach (var item in (MultiSelectList)ViewBag.DuringAttack)
+                {
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox"
+                               name="selectedSymptoms"
+                               value="@item.Value"
+                               id="symptom_@item.Value" />
+                        <label class="form-check-label" for="symptom_@item.Value">
+                            @item.Text
+                        </label>
+                    </div>
+                }
+            </div>
+        }
+
+        else if (conditionType == "Sinus")
+        {
+            <div>
+                <label>Major symptoms</label>
+                @foreach (var item in (MultiSelectList)ViewBag.Major)
+                {
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox"
+                               name="selectedSymptoms"
+                               value="@item.Value"
+                               id="symptom_@item.Value" />
+                        <label class="form-check-label" for="symptom_@item.Value">
+                            @item.Text
+                        </label>
+                    </div>
+                }
+            </div>
+           
+            <div>
+                <label>Minor symptoms</label>
+                @foreach (var item in (MultiSelectList)ViewBag.Minor)
+                {
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox"
+                               name="selectedSymptoms"
+                               value="@item.Value"
+                               id="symptom_@item.Value" />
+                        <label class="form-check-label" for="symptom_@item.Value">
+                            @item.Text
+                        </label>
+                    </div>
+                }
+            </div>
+            }
+        else if (conditionType == "Arthritis")
+        {
             <div>
                 @foreach (var item in (MultiSelectList)ViewBag.Symptoms)
                 {
