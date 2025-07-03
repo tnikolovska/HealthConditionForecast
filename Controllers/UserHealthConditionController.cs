@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace HealthConditionForecast.Controllers
 {
@@ -44,7 +45,8 @@ namespace HealthConditionForecast.Controllers
         // GET: UserHealthConditionController/Create
         public IActionResult Create()
         {
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "UserName");
+            //ViewData["UserId"] = new SelectList(_context.Users, "Id", "UserName");
+            ViewData["UserId"] = User.FindFirstValue(ClaimTypes.NameIdentifier);
             ViewData["HealthConditionId"] = new SelectList(_context.HealthConditions, "Id", "Name");
             return View();
         }
@@ -52,17 +54,27 @@ namespace HealthConditionForecast.Controllers
         // POST: UserHealthConditionController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserId,HealthConditionId")] UserHealthCondition userHealthCondition)
+        public async Task<IActionResult> Create([Bind("HealthConditionId")] UserHealthCondition userHealthCondition)
         {
+            userHealthCondition.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ModelState.Remove("UserId");
             if (ModelState.IsValid)
             {
                 _context.UserHealthConditions.Add(userHealthCondition);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("SelectSymptoms", "UserSymptomSelection", new { healthConditionId = userHealthCondition.HealthConditionId });
+                //return RedirectToAction("SelectSymptoms", "UserSymptomSelection", new { healthConditionId = userHealthCondition.HealthConditionId });
+                return RedirectToAction("SelectSymptoms", "UserSymptomSelection", new { userHealthConditionId = userHealthCondition.Id });
             }
 
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "UserName", userHealthCondition.UserId);
+           // ViewData["UserId"] = new SelectList(_context.Users, "Id", "UserName", userHealthCondition.UserId);
             ViewData["HealthConditionId"] = new SelectList(_context.HealthConditions, "Id", "Name", userHealthCondition.HealthConditionId);
+            foreach (var state in ModelState)
+            {
+                foreach (var error in state.Value.Errors)
+                {
+                    Console.WriteLine($"Field: {state.Key} Error: {error.ErrorMessage}");
+                }
+            }
             return View(userHealthCondition);
         }
 
