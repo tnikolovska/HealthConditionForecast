@@ -1,7 +1,9 @@
 ﻿using HealthConditionForecast.Data;
 using HealthConditionForecast.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 
 namespace HealthConditionForecast.Controllers
@@ -50,11 +52,14 @@ namespace HealthConditionForecast.Controllers
                     forecastList.Add(forecast);
                     System.Console.WriteLine(forecast.ToString());
                     id++;
+                    _context.Forecasts.Add(forecast);
+                    _context.SaveChanges();
                 }
             }
 
             return forecastList;
         }
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> ForecastMigraine() 
         {
             if (User.Identity.IsAuthenticated)
@@ -65,7 +70,6 @@ namespace HealthConditionForecast.Controllers
                 {
                     string forecastSearchResults = await response.Content.ReadAsStringAsync();
                     list = ParseJSON(forecastSearchResults);
-
                 }
                 return View(list.ToList());
             }
@@ -73,6 +77,7 @@ namespace HealthConditionForecast.Controllers
                 return Redirect("/Identity/Account/Login");
 
         }
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> ForecastSinus()
         {
             if (User.Identity.IsAuthenticated)
@@ -90,6 +95,7 @@ namespace HealthConditionForecast.Controllers
             else
                 return Redirect("/Identity/Account/Login");
         }
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> ForecastArthritis()
         {
             if (User.Identity.IsAuthenticated)
@@ -107,24 +113,27 @@ namespace HealthConditionForecast.Controllers
             else
                 return Redirect("/Identity/Account/Login");
         }
+        [Authorize(Roles = "Admin")]
         // GET: ForecastController
-        public ActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var forecasts = await _context.Forecasts.ToListAsync();
+            return View(forecasts);
+            
         }
 
         // GET: ForecastController/Details/5
-        public ActionResult Details(int id)
+        /*public ActionResult Details(int id)
         {
             return View();
-        }
-
+        }*/
+        /*[Authorize(Roles = "Admin")]
         // GET: ForecastController/Create
         public ActionResult Create()
         {
             return View();
-        }
-
+        }*/
+        /*[Authorize(Roles = "Admin")]
         // POST: ForecastController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -138,14 +147,14 @@ namespace HealthConditionForecast.Controllers
             {
                 return View();
             }
-        }
-
+        }*/
+        /*[Authorize(Roles = "Admin")]
         // GET: ForecastController/Edit/5
         public ActionResult Edit(int id)
         {
             return View();
         }
-
+        [Authorize(Roles = "Admin")]
         // POST: ForecastController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -159,27 +168,40 @@ namespace HealthConditionForecast.Controllers
             {
                 return View();
             }
-        }
-
+        }*/
+        [Authorize(Roles = "Admin")]
         // GET: ForecastController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var forecast = await _context.Forecasts
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (forecast == null)
+            {
+                return NotFound();
+            }
+
+            return View(forecast);
         }
 
+        [Authorize(Roles = "Admin")]
         // POST: ForecastController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> Delete(int id, IFormCollection collection)
         {
-            try
+            var forecast = await _context.Forecasts.FindAsync(id);
+            if (forecast != null)
             {
-                return RedirectToAction(nameof(Index));
+                _context.Forecasts.Remove(forecast);
+                await _context.SaveChangesAsync();
             }
-            catch
-            {
-                return View();
-            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using HealthConditionForecast.Data;
 using HealthConditionForecast.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -15,6 +16,7 @@ namespace HealthConditionForecast.Controllers
         {
             _context = context;
         }
+        [Authorize(Roles = "Admin,User")]
         // GET: ArthritisSymptomController
         public async Task<IActionResult> Index()
         {
@@ -25,6 +27,7 @@ namespace HealthConditionForecast.Controllers
         }
 
         // GET: ArthritisSymptomController/Details/5
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -39,14 +42,14 @@ namespace HealthConditionForecast.Controllers
             ViewData["HealthCondition"] = "Arthritis";
             return View(symptom);
         }
-
+        [Authorize(Roles = "Admin")]
         // GET: ArthritisSymptomController/Create
         public IActionResult Create()
         {
             ViewData["HealthConditionId"] = new SelectList(_context.HealthConditions, "Id", "Name");
             return View();
         }
-
+        [Authorize(Roles = "Admin")]
         // POST: ArthritisSymptomController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -67,7 +70,7 @@ namespace HealthConditionForecast.Controllers
             ViewData["HealthConditionId"] = new SelectList(_context.HealthConditions, "Id", "Name", symptom.HealthConditionId);
             return View(symptom);
         }
-
+        [Authorize(Roles = "Admin")]
         // GET: ArthritisSymptomController/Edit/5
         public async Task<IActionResult> Edit(long? id)
         {
@@ -84,6 +87,7 @@ namespace HealthConditionForecast.Controllers
             ViewData["HealthConditionId"] = new SelectList(_context.HealthConditions, "Id", "Name", symptom.HealthConditionId);
             return View(symptom);
         }
+        [Authorize(Roles = "Admin")]
         // POST: ArthritisSymptomController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -120,7 +124,7 @@ namespace HealthConditionForecast.Controllers
             return View(symptom);
         }
 
-
+        [Authorize(Roles = "Admin")]
         // GET: ArthritisSymptomController/Delete/5
         public async Task<IActionResult> Delete(long? id)
         {
@@ -138,7 +142,7 @@ namespace HealthConditionForecast.Controllers
             return View(symptom);
         }
 
-
+        [Authorize(Roles = "Admin")]
         // POST: ArthritisSymptomController/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
