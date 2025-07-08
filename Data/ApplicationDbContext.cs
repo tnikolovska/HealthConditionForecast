@@ -5,14 +5,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HealthConditionForecast.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
+    //public class ApplicationDbContext : IdentityDbContext<IdentityUser>
+    public class ApplicationDbContext : IdentityDbContext<IdentityUser, IdentityRole, string>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
 
-       
+        
+
+
+
 
         public DbSet<Forecast> Forecasts { get; set; }
         public DbSet<HealthCondition> HealthConditions { get; set; }

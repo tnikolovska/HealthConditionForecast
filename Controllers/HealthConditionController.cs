@@ -1,5 +1,6 @@
 ﻿using HealthConditionForecast.Data;
 using HealthConditionForecast.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,13 +16,13 @@ namespace HealthConditionForecast.Controllers
             _context = context;
         }
         // GET: HealthConditionController
-       /* public ActionResult Index()
-        {
-            var healthConditions = _context.HealthConditions.ToList();
-            //return View(healthConditions);
-            return View();
-        }*/
-
+        /* public ActionResult Index()
+         {
+             var healthConditions = _context.HealthConditions.ToList();
+             //return View(healthConditions);
+             return View();
+         }*/
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> Index()
         {
             var healthConditions = await _context.HealthConditions
@@ -30,7 +31,7 @@ namespace HealthConditionForecast.Controllers
 
             return View(healthConditions);  // pass the list to the view
         }
-
+        [Authorize(Roles = "Admin,User")]
         // GET: HealthConditionController/Details/5
         public async Task<IActionResult> Details(int id)
         {
@@ -42,14 +43,14 @@ namespace HealthConditionForecast.Controllers
                 return NotFound();
             return View(healthCondition);
         }
-
+        [Authorize(Roles = "Admin")]
         // GET: HealthConditionController/Create
         public ActionResult Create()
         {
             
                 return View();
         }
-
+        [Authorize(Roles = "Admin")]
         // POST: HealthConditionController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -76,7 +77,7 @@ namespace HealthConditionForecast.Controllers
                 return View();
             }
         }
-
+        [Authorize(Roles = "Admin")]
         // GET: HealthConditionController/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
@@ -88,7 +89,7 @@ namespace HealthConditionForecast.Controllers
                 return NotFound();
             return View(healthCondition);
         }
-
+        [Authorize(Roles = "Admin")]
         // POST: HealthConditionController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -132,7 +133,7 @@ namespace HealthConditionForecast.Controllers
 
             return View(healthCondition);
         }
-
+        [Authorize(Roles = "Admin")]
         // GET: HealthConditionController/Delete/5
         public async Task<ActionResult> Delete(int id)
         {
@@ -142,7 +143,7 @@ namespace HealthConditionForecast.Controllers
                 return NotFound();
             return View(healthCondition);
         }
-
+        [Authorize(Roles = "Admin")]
         // POST: HealthConditionController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]

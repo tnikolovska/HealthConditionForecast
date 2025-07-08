@@ -1,11 +1,12 @@
 ﻿using HealthConditionForecast.Data;
+using HealthConditionForecast.Helpers;
 using HealthConditionForecast.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using static HealthConditionForecast.Models.MigraineSympton;
-using HealthConditionForecast.Helpers;
 
 namespace HealthConditionForecast.Controllers
 {
@@ -42,7 +43,7 @@ namespace HealthConditionForecast.Controllers
             return View(symptom);
         }
 
-
+        [Authorize(Roles = "Admin")]
         // GET: MigraineSymptomController/Create
         public IActionResult Create()
         {
@@ -52,7 +53,7 @@ namespace HealthConditionForecast.Controllers
             //ViewData["MigraineType"] = new SelectList(Enum.GetValues(typeof(MigraineType)));
             return View();
         }
-
+        [Authorize(Roles = "Admin")]
         // POST: MigraineSymptomController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -78,8 +79,7 @@ namespace HealthConditionForecast.Controllers
             return View(symptom);
 
         }
-
-
+        [Authorize(Roles = "Admin")]
         // GET: MigraineSymptomController/Edit/5
         public async Task<IActionResult> Edit(long? id)
         {
@@ -99,7 +99,7 @@ namespace HealthConditionForecast.Controllers
             return View(symptom);
         }
 
-
+        [Authorize(Roles = "Admin")]
         // POST: MigraineSymptomController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -134,7 +134,7 @@ namespace HealthConditionForecast.Controllers
             ViewData["MigraineType"] = EnumExtensions.ToSelectList<MigraineType>(default);
             return View(symptom);
         }
-
+        [Authorize(Roles = "Admin")]
         // GET: MigraineSymptomController/Delete/5
         public async Task<IActionResult> Delete(long? id)
         {
@@ -151,7 +151,7 @@ namespace HealthConditionForecast.Controllers
 
             return View(symptom);
         }
-
+        [Authorize(Roles = "Admin")]
         // POST: MigraineSymptomController/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

@@ -1,5 +1,6 @@
 ﻿using HealthConditionForecast.Data;
 using HealthConditionForecast.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -16,6 +17,7 @@ namespace HealthConditionForecast.Controllers
         {
             _context = context;
         }
+        [Authorize(Roles = "Admin")]
         // GET: UserHealthConditionController
         public async Task<IActionResult> Index()
         {
@@ -27,6 +29,7 @@ namespace HealthConditionForecast.Controllers
 
         // GET: UserHealthConditionController/Details/5
         // GET: UserHealthCondition/Details/5
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -41,44 +44,51 @@ namespace HealthConditionForecast.Controllers
             return View(userHealthCondition);
         }
 
-
         // GET: UserHealthConditionController/Create
+        [Authorize(Roles = "Admin,User")]
         public IActionResult Create()
         {
-            //ViewData["UserId"] = new SelectList(_context.Users, "Id", "UserName");
-            ViewData["UserId"] = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            ViewData["HealthConditionId"] = new SelectList(_context.HealthConditions, "Id", "Name");
-            return View();
+            if (User.Identity.IsAuthenticated)
+            {
+                //ViewData["UserId"] = new SelectList(_context.Users, "Id", "UserName");
+                ViewData["UserId"] = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                ViewData["HealthConditionId"] = new SelectList(_context.HealthConditions, "Id", "Name");
+                return View();
+            }
+            else return Redirect("/Identity/Account/Login");
         }
-
+        [Authorize(Roles = "Admin,User")]
         // POST: UserHealthConditionController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("HealthConditionId")] UserHealthCondition userHealthCondition)
         {
-            userHealthCondition.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            ModelState.Remove("UserId");
-            if (ModelState.IsValid)
-            {
-                _context.UserHealthConditions.Add(userHealthCondition);
-                await _context.SaveChangesAsync();
-                //return RedirectToAction("SelectSymptoms", "UserSymptomSelection", new { healthConditionId = userHealthCondition.HealthConditionId });
-                return RedirectToAction("SelectSymptoms", "UserSymptomSelection", new { userHealthConditionId = userHealthCondition.Id });
-            }
-
-           // ViewData["UserId"] = new SelectList(_context.Users, "Id", "UserName", userHealthCondition.UserId);
-            ViewData["HealthConditionId"] = new SelectList(_context.HealthConditions, "Id", "Name", userHealthCondition.HealthConditionId);
-            foreach (var state in ModelState)
-            {
-                foreach (var error in state.Value.Errors)
+            
+                userHealthCondition.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                ModelState.Remove("UserId");
+                if (ModelState.IsValid)
                 {
-                    Console.WriteLine($"Field: {state.Key} Error: {error.ErrorMessage}");
+                    _context.UserHealthConditions.Add(userHealthCondition);
+                    await _context.SaveChangesAsync();
+                    //return RedirectToAction("SelectSymptoms", "UserSymptomSelection", new { healthConditionId = userHealthCondition.HealthConditionId });
+                    return RedirectToAction("SelectSymptoms", "UserSymptomSelection", new { userHealthConditionId = userHealthCondition.Id });
                 }
-            }
-            return View(userHealthCondition);
-        }
 
+                // ViewData["UserId"] = new SelectList(_context.Users, "Id", "UserName", userHealthCondition.UserId);
+                ViewData["HealthConditionId"] = new SelectList(_context.HealthConditions, "Id", "Name", userHealthCondition.HealthConditionId);
+                foreach (var state in ModelState)
+                {
+                    foreach (var error in state.Value.Errors)
+                    {
+                        Console.WriteLine($"Field: {state.Key} Error: {error.ErrorMessage}");
+                    }
+                }
+                return View(userHealthCondition);
+            
+            
+        }
         // GET: UserHealthConditionController/Edit/5
+        /*[Authorize(Roles = "User")]
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -94,6 +104,7 @@ namespace HealthConditionForecast.Controllers
         }
 
         // POST: UserHealthConditionController/Edit/5
+        [Authorize(Roles = "User")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, [Bind("Id,UserId,HealthConditionId")] UserHealthCondition userHealthCondition)
@@ -107,7 +118,7 @@ namespace HealthConditionForecast.Controllers
                 {
                     _context.Update(userHealthCondition);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Details),, new { id = id });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -121,7 +132,8 @@ namespace HealthConditionForecast.Controllers
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "UserName", userHealthCondition.UserId);
             ViewData["HealthConditionId"] = new SelectList(_context.HealthConditions, "Id", "Name", userHealthCondition.HealthConditionId);
             return View(userHealthCondition);
-        }
+        }*/
+        [Authorize(Roles = "Admin")]
         // GET: UserHealthConditionController/Delete/5
         public async Task<IActionResult> Delete(long? id)
         {
@@ -137,7 +149,7 @@ namespace HealthConditionForecast.Controllers
             return View(userHealthCondition);
         }
 
-
+        [Authorize(Roles = "Admin")]
         // POST: UserHealthConditionController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
