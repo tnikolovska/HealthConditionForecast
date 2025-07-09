@@ -1,48 +1,62 @@
 ﻿@model IEnumerable<HealthConditionForecast.Models.Forecast>
 
 @{
-    ViewData["Title"] = "Forecasts";
+    ViewData["Title"] = "Arthritis Forecasts";
+
+    var categoryConfig = new Dictionary<string, (string Color, string Icon, string Tooltip)>
+    {
+        { "Beneficial", ("success", "bi-emoji-smile", "Good weather for arthritis – low risk.") },
+        { "At Risk", ("danger", "bi-exclamation-triangle", "High risk of arthritis discomfort.") },
+        { "Neutral", ("secondary", "bi-thermometer", "Neutral conditions.") },
+        { "Unknown", ("info", "bi-question-circle", "No forecast category available.") }
+    };
 }
 
-<h1>Forecasts</h1>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
 
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h1 class="display-5">🦴 Arthritis Forecast</h1>
+        <p class="lead">Visual forecast with helpful cues and guidance for arthritis pain levels.</p>
+    </div>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Forecast ID</th>
-            <th>Name</th>
-            <th>Date</th>
-            <th>Value</th>
-            <th>Category</th>
-            <th>Category Value</th>
-            <th>Mobile Link</th>
-            <th>Link</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var forecast in Model.OrderBy(f => f.Date))
         {
-            <tr>
-                <td>@item.Id</td>
-                <td>@item.IdForecast</td>
-                <td>@item.Name</td>
-                <td>@item.Date.ToString("yyyy-MM-dd")</td>
-                <td>@item.Value</td>
-                <td>@item.Category</td>
-                <td>@item.CategoryValue</td>
-                <td><a href="@item.MobileLink" target="_blank">Mobile</a></td>
-                <td><a href="@item.Link" target="_blank">Web</a></td>
-                <td>
-    @if (User.IsInRole("Admin"))
-    {
+            var category = forecast.Category ?? "Unknown";
+            var config = categoryConfig.ContainsKey(category) ? categoryConfig[category] : categoryConfig["Unknown"];
 
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-    }
-                    </td>
-            </tr>
+            <div class="col">
+                <div class="card border-@config.Color shadow-sm h-100">
+                    <div class="card-header bg-@config.Color text-white d-flex justify-content-between align-items-center">
+                        <span>
+                            <i class="bi @config.Icon me-2" data-bs-toggle="tooltip" title="@config.Tooltip"></i>
+                            <strong>@category</strong>
+                        </span>
+                        <span class="badge bg-light text-@config.Color" data-bs-toggle="tooltip" title="Risk Level Category Value">@forecast.CategoryValue</span>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">@forecast.Date.ToString("dddd, MMM d")</h5>
+                        <p class="card-text">
+                            <span class="fw-bold">Forecast Value:</span>
+                            <span class="badge bg-@config.Color text-white" data-bs-toggle="tooltip" title="Numerical pain forecast value">@forecast.Value</span>
+                        </p>
+                        <a href="@forecast.Link" target="_blank" class="btn btn-outline-@config.Color btn-sm">
+                            Full Forecast <i class="bi bi-box-arrow-up-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
         }
-    </tbody>
-</table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Enable all tooltips on the page
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+            new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    </script>
+}

@@ -1,61 +1,58 @@
 ﻿@model HealthConditionForecast.Models.UserSymptomSelection
 
 @{
-    ViewData["Title"] = "User Symptom Selection Details";
+    ViewData["Title"] = "Symptom Selection Details";
 }
 
-<h1>User Symptom Selection</h1>
+<h2>@ViewData["Title"]</h2>
 
-<div class="card p-3">
+<div class="card mt-3 p-3 shadow-sm">
     <dl class="row">
+        <dt class="col-sm-3">Selection ID:</dt>
+        <dd class="col-sm-9">@Model.Id</dd>
+
+        <dt class="col-sm-3">User Health Condition ID:</dt>
+        <dd class="col-sm-9">@Model.UserHealthConditionId</dd>
     </dl>
 
-    <hr />
-
-    <h4>Arthritis Symptoms</h4>
+    @* Arthritis Symptoms *@
     @if (Model.ArthritisSymptoms != null && Model.ArthritisSymptoms.Any())
     {
+        <h4>Arthritis Symptoms</h4>
         <ul>
-            @foreach (var s in Model.ArthritisSymptoms)
+            @foreach (var symptom in Model.ArthritisSymptoms)
             {
-                <li>@s.Name - @s.Description</li>
+                <li>@symptom.Name</li>
             }
         </ul>
     }
-    else
-    {
-        <p><i>No arthritis symptoms selected.</i></p>
-    }
 
-    <h4>Migraine Symptoms</h4>
+    @* Migraine Symptoms *@
     @if (Model.MigraineSymptoms != null && Model.MigraineSymptoms.Any())
     {
+        <h4>Migraine Symptoms</h4>
         <ul>
-            @foreach (var s in Model.MigraineSymptoms)
+            @foreach (var symptom in Model.MigraineSymptoms)
             {
-                <li>@s.Name - @s.Description (@s.Type)</li>
+                <li>@symptom.Name (@symptom.Type)</li>
             }
         </ul>
     }
-    else
-    {
-        <p><i>No migraine symptoms selected.</i></p>
-    }
 
-    <h4>Sinus Symptoms</h4>
+    @* Sinus Symptoms *@
     @if (Model.SinusSymptoms != null && Model.SinusSymptoms.Any())
     {
+        <h4>Sinus Symptoms</h4>
         <ul>
-            @foreach (var s in Model.SinusSymptoms)
+            @foreach (var symptom in Model.SinusSymptoms)
             {
-                <li>@s.Name - @s.Description</li>
+                <li>@symptom.Name (@symptom.Type)</li>
             }
         </ul>
     }
-    else
-    {
-        <p><i>No sinus symptoms selected.</i></p>
-    }
+</div>
 
-    <a asp-action="Index" class="btn btn-secondary mt-3">Back to List</a>
+<div class="mt-4">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </div>
