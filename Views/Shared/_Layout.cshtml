@@ -43,9 +43,9 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="migraineDropdown" data-bs-toggle="dropdown">Migraine</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" asp-controller="MigraineSympton" asp-action="Index">Symptoms</a></li>
-                            <li><a class="dropdown-item" asp-controller="MigraineSympton" asp-action="Create">Create Symptom</a></li>
-                            <li><a class="dropdown-item" asp-controller="Forecast" asp-action="Migraine">Forecast</a></li>
+                            <li><a class="dropdown-item" asp-controller="MigraineSymptom" asp-action="Index">Symptoms</a></li>
+                            <li><a class="dropdown-item" asp-controller="MigraineSymptom" asp-action="Create">Create Symptom</a></li>
+                            <li><a class="dropdown-item" asp-controller="UserHealthCondition" asp-action="Create">Forecast</a></li>
                         </ul>
                     </li>
 
@@ -54,7 +54,7 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" asp-controller="SinusSymptom" asp-action="Index">Symptoms</a></li>
                             <li><a class="dropdown-item" asp-controller="SinusSymptom" asp-action="Create">Create Symptom</a></li>
-                            <li><a class="dropdown-item" asp-controller="Forecast" asp-action="Sinus">Forecast</a></li>
+                            <li><a class="dropdown-item" asp-controller="UserHealthCondition" asp-action="Create">Forecast</a></li>
                         </ul>
                     </li>
 
@@ -62,7 +62,7 @@
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown">User Management</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" asp-controller="UserHealthCondition" asp-action="Index">User Conditions</a></li>
-                            <li><a class="dropdown-item" asp-controller="UserHealthCondition" asp-action="Create">Create Condition</a></li>
+                            <li><a class="dropdown-item" asp-controller="UserHealthCondition" asp-action="Create">Assign Health Condition</a></li>
                             <li><a class="dropdown-item" asp-controller="UserSymptomSelection" asp-action="Index">Symptom Selections</a></li>
                         </ul>
                     </li>
@@ -71,13 +71,23 @@
                 <ul class="navbar-nav">
                     @if (isAuthenticated)
                     {
-                        <li class="nav-item"><a class="nav-link disabled">Hello, @userName</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Logout">Logout</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name!</a>
+                        </li>
+                        <li class="nav-item">
+                            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                <button type="submit" class="nav-link">Logout</button>
+                            </form>
+                        </li>
                     }
                     else
                     {
-                        <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Login">Login</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Register">Register</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Register</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                        </li>
                     }
                 </ul>
             </div>

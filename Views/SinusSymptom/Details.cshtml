@@ -4,31 +4,34 @@
     ViewData["Title"] = "Sinus Symptom Details";
 }
 
-<h1>Sinus Symptom Details</h1>
+<div class="container mt-5">
+    <h1 class="mb-4">Sinus Symptom Details</h1>
 
-<div>
-    <h4>Symptom</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">Name</dt>
-        <dd class="col-sm-10">@Model.Name</dd>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h4 class="mb-3">Symptom</h4>
+            <hr />
+            <dl class="row">
+                <dt class="col-sm-3 text-muted">Name</dt>
+                <dd class="col-sm-9 fs-5 fw-semibold">@Model.Name</dd>
 
-        <dt class="col-sm-2">Description</dt>
-        <dd class="col-sm-10">@Model.Description</dd>
+                <dt class="col-sm-3 text-muted">Description</dt>
+                <dd class="col-sm-9">@Model.Description</dd>
 
-        <dt class="col-sm-2">Type</dt>
-        <dd class="col-sm-10">@Model.Type</dd>
+                <dt class="col-sm-3 text-muted">Type</dt>
+                <dd class="col-sm-9">@Model.Type</dd>
 
-        <dt class="col-sm-2">Health Condition</dt>
-        <dd class="col-sm-10">@ViewBag.HealthCondition</dd>
-    </dl>
-</div>
+                <dt class="col-sm-3 text-muted">Health Condition</dt>
+                <dd class="col-sm-9">@ViewBag.HealthCondition</dd>
+            </dl>
+        </div>
+    </div>
 
-<div>
-    @if (User.IsInRole("Admin"))
-    {
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
-    }
-    
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    <div class="mt-3">
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning me-2">✏️ Edit</a>
+        }
+        <a asp-action="Index" class="btn btn-secondary">⬅️ Back to List</a>
+    </div>
 </div>

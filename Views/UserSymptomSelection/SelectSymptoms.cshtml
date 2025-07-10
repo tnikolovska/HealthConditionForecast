@@ -1,120 +1,125 @@
 ﻿@{
     ViewData["Title"] = "Select Symptoms";
     var conditionType = ViewBag.ConditionType as string;
+    var userHealthConditionId = ViewData["userHealthConditionId"];
 }
 
-<h1>Select @conditionType Symptoms</h1>
+<div class="container mt-5">
+    <h1 class="mb-4 text-center">📝 Select <strong>@conditionType</strong> Symptoms</h1>
 
-<form method="post" asp-action="SelectSymptoms" asp-route-userHealthConditionId="@ViewData["userHealthConditionId"]">
-    <div class="form-group">
-        @if (conditionType == "Migraine")
-        {
-            <label>Select @conditionType Symptoms</label>
-            
-            <div>
-                <label>Before Headache Symptoms</label>
-                @foreach (var item in (MultiSelectList)ViewBag.BeforeHeadache)
+    <form method="post" asp-action="SelectSymptoms" asp-route-userHealthConditionId="@userHealthConditionId">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                @if (conditionType == "Migraine")
                 {
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox"
-                               name="selectedSymptoms"
-                               value="@item.Value"
-                               id="symptom_@item.Value" />
-                        <label class="form-check-label" for="symptom_@item.Value">
-                            @item.Text
-                        </label>
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">🧠 Migraine: Before Headache</h5>
+                        </div>
+                        <div class="card-body">
+                            @foreach (var item in (MultiSelectList)ViewBag.BeforeHeadache)
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="selectedSymptoms" value="@item.Value" id="symptom_@item.Value" />
+                                    <label class="form-check-label" for="symptom_@item.Value">@item.Text</label>
+                                </div>
+                            }
+                        </div>
                     </div>
-                }
-            </div>
-            <div>
-                <label>Migraine with aura symptoms</label>
-                @foreach (var item in (MultiSelectList)ViewBag.MigraineWithAura)
-                {
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox"
-                               name="selectedSymptoms"
-                               value="@item.Value"
-                               id="symptom_@item.Value" />
-                        <label class="form-check-label" for="symptom_@item.Value">
-                            @item.Text
-                        </label>
-                    </div>
-                }
-            </div>
-            <div>
-                <label>During attack symptoms</label>
-                @foreach (var item in (MultiSelectList)ViewBag.DuringAttack)
-                {
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox"
-                               name="selectedSymptoms"
-                               value="@item.Value"
-                               id="symptom_@item.Value" />
-                        <label class="form-check-label" for="symptom_@item.Value">
-                            @item.Text
-                        </label>
-                    </div>
-                }
-            </div>
-        }
 
-        else if (conditionType == "Sinus")
-        {
-            <div>
-                <label>Major symptoms</label>
-                @foreach (var item in (MultiSelectList)ViewBag.Major)
-                {
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox"
-                               name="selectedSymptoms"
-                               value="@item.Value"
-                               id="symptom_@item.Value" />
-                        <label class="form-check-label" for="symptom_@item.Value">
-                            @item.Text
-                        </label>
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header bg-warning text-dark">
+                            <h5 class="mb-0">🌈 Migraine With Aura</h5>
+                        </div>
+                        <div class="card-body">
+                            @foreach (var item in (MultiSelectList)ViewBag.MigraineWithAura)
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="selectedSymptoms" value="@item.Value" id="symptom_@item.Value" />
+                                    <label class="form-check-label" for="symptom_@item.Value">@item.Text</label>
+                                </div>
+                            }
+                        </div>
                     </div>
-                }
-            </div>
-           
-            <div>
-                <label>Minor symptoms</label>
-                @foreach (var item in (MultiSelectList)ViewBag.Minor)
-                {
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox"
-                               name="selectedSymptoms"
-                               value="@item.Value"
-                               id="symptom_@item.Value" />
-                        <label class="form-check-label" for="symptom_@item.Value">
-                            @item.Text
-                        </label>
-                    </div>
-                }
-            </div>
-            }
-        else if (conditionType == "Arthritis")
-        {
-            <div>
-                @foreach (var item in (MultiSelectList)ViewBag.Symptoms)
-                {
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox"
-                               name="selectedSymptoms"
-                               value="@item.Value"
-                               id="symptom_@item.Value" />
-                        <label class="form-check-label" for="symptom_@item.Value">
-                            @item.Text
-                        </label>
-                    </div>
-                }
-            </div>
-        }
-        else
-        {
-            <p>No symptoms available for this health condition.</p>
-        }
-    </div>
 
-    <button type="submit" class="btn btn-primary">Save Selection</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</form>
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header bg-danger text-white">
+                            <h5 class="mb-0">🔥 Migraine During Attack</h5>
+                        </div>
+                        <div class="card-body">
+                            @foreach (var item in (MultiSelectList)ViewBag.DuringAttack)
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="selectedSymptoms" value="@item.Value" id="symptom_@item.Value" />
+                                    <label class="form-check-label" for="symptom_@item.Value">@item.Text</label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+                else if (conditionType == "Sinus")
+                {
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header bg-secondary text-white">
+                            <h5 class="mb-0">😤 Sinus: Major Symptoms</h5>
+                        </div>
+                        <div class="card-body">
+                            @foreach (var item in (MultiSelectList)ViewBag.Major)
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="selectedSymptoms" value="@item.Value" id="symptom_@item.Value" />
+                                    <label class="form-check-label" for="symptom_@item.Value">@item.Text</label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">🤧 Sinus: Minor Symptoms</h5>
+                        </div>
+                        <div class="card-body">
+                            @foreach (var item in (MultiSelectList)ViewBag.Minor)
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="selectedSymptoms" value="@item.Value" id="symptom_@item.Value" />
+                                    <label class="form-check-label" for="symptom_@item.Value">@item.Text</label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+                else if (conditionType == "Arthritis")
+                {
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">🦴 Arthritis Symptoms</h5>
+                        </div>
+                        <div class="card-body">
+                            @foreach (var item in (MultiSelectList)ViewBag.Symptoms)
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="selectedSymptoms" value="@item.Value" id="symptom_@item.Value" />
+                                    <label class="form-check-label" for="symptom_@item.Value">@item.Text</label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-warning">No symptoms available for this health condition.</div>
+                }
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-action="Index" class="btn btn-secondary btn-lg px-4">⬅️ Cancel</a>
+                    <button type="submit" class="btn btn-primary btn-lg px-4">💾 Save Selection</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
