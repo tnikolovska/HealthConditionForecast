@@ -1,47 +1,66 @@
 ﻿@model IEnumerable<HealthConditionForecast.Models.Forecast>
 
 @{
-    ViewData["Title"] = "Forecasts";
+    ViewData["Title"] = "Sinus Forecasts";
 }
 
-<h1>Forecasts</h1>
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h1 class="display-5">👃 Sinus Forecast</h1>
+        <p class="lead">Visualize sinus forecast over the next 5 days with insightful trends.</p>
+    </div>
 
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Forecast ID</th>
-            <th>Name</th>
-            <th>Date</th>
-            <th>Value</th>
-            <th>Category</th>
-            <th>Category Value</th>
-            <th>Mobile Link</th>
-            <th>Link</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
+    <div class="row g-4">
         @foreach (var item in Model)
         {
-            <tr>
-                <td>@item.Id</td>
-                <td>@item.IdForecast</td>
-                <td>@item.Name</td>
-                <td>@item.Date.ToString("yyyy-MM-dd")</td>
-                <td>@item.Value</td>
-                <td>@item.Category</td>
-                <td>@item.CategoryValue</td>
-                <td><a href="@item.MobileLink" target="_blank">Mobile</a></td>
-                <td><a href="@item.Link" target="_blank">Web</a></td>
-                <td>
-                @if (User.IsInRole("Admin"))
-                {
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                 }
-                </td>
-            </tr>
+            var cardColor = "bg-light";
+            var textColor = "text-dark";
+            var badgeColor = "bg-secondary";
+
+            switch (item.Category)
+            {
+                case "High Risk":
+                    cardColor = "bg-danger";
+                    textColor = "text-white";
+                    badgeColor = "bg-warning";
+                    break;
+                case "At Risk":
+                    cardColor = "bg-warning";
+                    textColor = "text-dark";
+                    badgeColor = "bg-danger";
+                    break;
+                case "Beneficial":
+                    cardColor = "bg-success";
+                    textColor = "text-white";
+                    badgeColor = "bg-info";
+                    break;
+            }
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow border-0 @cardColor @textColor">
+                    <div class="card-body">
+                        <h5 class="card-title">📅 @item.Date.ToString("dddd, MMM d")</h5>
+                        <p class="card-text mb-2">
+                            <span class="fw-bold">Category:</span>
+                            <span class="badge @badgeColor text-dark" title="Category Value: @item.CategoryValue">
+                                @item.Category
+                            </span>
+                        </p>
+                        <p class="card-text">
+                            <span class="fw-bold">Forecast Value:</span>
+                            <span class="fs-5">@item.Value</span>
+                        </p>
+                        <div class="d-flex justify-content-between">
+                            <a href="@item.MobileLink" class="btn btn-outline-light btn-sm" target="_blank">📱 Mobile</a>
+                            <a href="@item.Link" class="btn btn-outline-light btn-sm" target="_blank">🌐 Web</a>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">🗑 Delete</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
         }
-    </tbody>
-</table>
+    </div>
+</div>

@@ -4,17 +4,31 @@
     ViewData["Title"] = "Delete User Health Condition";
 }
 
-<h1>Delete User Health Condition</h1>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card shadow-sm border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="mb-0">Delete Confirmation</h3>
+                </div>
+                <div class="card-body">
+                    <h5 class="mb-4">Are you sure you want to delete this user health condition?</h5>
 
-<h4>Are you sure you want to delete this?</h4>
+                    <dl class="row mb-4">
+                        <dt class="col-sm-4 text-muted">User ID</dt>
+                        <dd class="col-sm-8">@Model.UserId</dd>
 
-<div class="card p-3 mt-3">
-    <dl class="row">
-    </dl>
+                        <dt class="col-sm-4 text-muted">Health Condition ID</dt>
+                        <dd class="col-sm-8">@Model.HealthConditionId</dd>
+                    </dl>
 
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <button type="submit" class="btn btn-danger">Delete</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-    </form>
+                    <form asp-action="Delete" method="post" class="d-flex justify-content-between">
+                        <input type="hidden" asp-for="Id" />
+                        <button type="submit" class="btn btn-danger btn-lg shadow-sm">🗑️ Delete</button>
+                        <a asp-action="Index" class="btn btn-secondary btn-lg shadow-sm">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

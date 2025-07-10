@@ -4,33 +4,75 @@
     ViewData["Title"] = "Forecasts";
 }
 
-<h1>Forecasts</h1>
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h1 class="display-5">🌦️ All Health Forecasts</h1>
+        <p class="lead">Overview of all forecast entries by category, value, and date.</p>
+    </div>
 
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Date</th>
-            <th>Category</th>
-            <th>Value</th>
-            <th>Category Value</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+    <table class="table table-striped table-bordered align-middle">
+        <thead class="table-dark">
             <tr>
-                <td>@item.Name</td>
-                <td>@item.Date.ToShortDateString()</td>
-                <td>@item.Category</td>
-                <td>@item.Value</td>
-                <td>@item.CategoryValue</td>
-                <td>
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
+                <th>Date</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Forecast Value</th>
+                <th>Links</th>
+                @if (User.IsInRole("Admin"))
+                {
+                    <th>Actions</th>
+                }
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var rowClass = "";
+                var badgeColor = "bg-secondary";
+
+                switch (item.Category)
+                {
+                    case "High Risk":
+                        rowClass = "table-danger text-white";
+                        badgeColor = "bg-warning";
+                        break;
+                    case "At Risk":
+                        rowClass = "table-warning text-dark";
+                        badgeColor = "bg-danger";
+                        break;
+                    case "Beneficial":
+                        rowClass = "table-success text-white";
+                        badgeColor = "bg-info";
+                        break;
+                }
+
+                <tr class="@rowClass">
+                    <td>@item.Date.ToString("dddd, MMM d")</td>
+                    <td>@item.Name</td>
+                    <td>
+                        <span class="badge @badgeColor" title="Value: @item.CategoryValue">
+                            @item.Category
+                        </span>
+                    </td>
+                    <td class="fs-5">@item.Value</td>
+                    <td>
+                        <a href="@item.MobileLink" class="btn btn-outline-primary btn-sm me-1" target="_blank" title="Open Mobile Forecast">
+                            📱 Mobile
+                        </a>
+                        <a href="@item.Link" class="btn btn-outline-primary btn-sm" target="_blank" title="Open Web Forecast">
+                            🌐 Web
+                        </a>
+                    </td>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <td>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm" title="Delete this forecast">
+                                🗑 Delete
+                            </a>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

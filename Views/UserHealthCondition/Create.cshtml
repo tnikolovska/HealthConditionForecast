@@ -4,28 +4,41 @@
     ViewData["Title"] = "Assign Health Condition to User";
 }
 
-<h1>@ViewData["Title"]</h1>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">@ViewData["Title"]</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post" novalidate>
+                        @* Hidden UserId from ViewBag *@
+                        <input type="hidden" name="UserId" value="@ViewBag.UserId" />
 
-<form asp-action="Create" method="post">
-    <!--<div class="form-group">
-        <label asp-for="UserId" class="control-label">User</label>
-        <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
-        <span asp-validation-for="UserId" class="text-danger"></span>
-    </div>-->
+                        <div class="mb-4">
+                            <label asp-for="HealthConditionId" class="form-label">Health Condition</label>
+                            <select asp-for="HealthConditionId" class="form-select form-select-lg" asp-items="ViewBag.HealthConditionId">
+                                <option value="">-- Select Health Condition --</option>
+                            </select>
+                            <span asp-validation-for="HealthConditionId" class="text-danger"></span>
+                        </div>
 
-    <div class="form-group">
-        <label asp-for="HealthConditionId" class="control-label">Health Condition</label>
-        <select asp-for="HealthConditionId" class="form-control" asp-items="ViewBag.HealthConditionId"></select>
-        <span asp-validation-for="HealthConditionId" class="text-danger"></span>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button type="submit" class="btn btn-primary btn-lg px-5 shadow-sm">
+                                ✅ Assign
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-lg shadow-sm">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-    <input type="hidden" name="UserId" value="@ViewBag.UserId" />
-    <button type="submit" class="btn btn-primary">Assign</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-
-</form>
+</div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <partial name="_ValidationScriptsPartial" />
 }

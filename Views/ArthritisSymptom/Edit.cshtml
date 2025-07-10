@@ -4,37 +4,53 @@
     ViewData["Title"] = "Edit Arthritis Symptom";
 }
 
-<h1>Edit Arthritis Symptom</h1>
-
-<form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="Id" />
-
-    <div class="form-group">
-        <label asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h1 class="display-5 text-warning">✏️ Edit Arthritis Symptom</h1>
+        <p class="lead">Update the information for this arthritis symptom.</p>
     </div>
 
-    <div class="form-group">
-        <label asp-for="Description"></label>
-        <textarea asp-for="Description" class="form-control"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
+    <div class="card shadow border-warning">
+        <div class="card-header bg-warning text-dark">
+            <h5 class="mb-0">📝 Symptom Information</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label fw-bold">Name</label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label fw-bold">Description</label>
+                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="HealthConditionId" class="form-label fw-bold">Health Condition</label>
+                    <select asp-for="HealthConditionId" class="form-select" asp-items="ViewBag.HealthConditionId">
+                        <option value="">-- Select Health Condition --</option>
+                    </select>
+                    <span asp-validation-for="HealthConditionId" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-warning btn-lg">
+                        <i class="bi bi-save"></i> Save Changes
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary btn-lg">
+                        <i class="bi bi-arrow-left-circle"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
+</div>
 
-    <div class="form-group">
-        <label asp-for="HealthConditionId"></label>
-        <select asp-for="HealthConditionId" class="form-control" asp-items="ViewBag.HealthConditionId">
-            <option value="">-- Select Health Condition --</option>
-        </select>
-        <span asp-validation-for="HealthConditionId" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Save</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</form>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+@{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
 }

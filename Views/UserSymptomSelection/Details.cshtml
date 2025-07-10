@@ -4,55 +4,56 @@
     ViewData["Title"] = "Symptom Selection Details";
 }
 
-<h2>@ViewData["Title"]</h2>
+<div class="container mt-5">
+    <h2 class="mb-4">@ViewData["Title"]</h2>
 
-<div class="card mt-3 p-3 shadow-sm">
-    <dl class="row">
-        <dt class="col-sm-3">Selection ID:</dt>
-        <dd class="col-sm-9">@Model.Id</dd>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-4 text-muted">Selection ID:</dt>
+                <dd class="col-sm-8 fw-semibold">@Model.Id</dd>
 
-        <dt class="col-sm-3">User Health Condition ID:</dt>
-        <dd class="col-sm-9">@Model.UserHealthConditionId</dd>
-    </dl>
+                <dt class="col-sm-4 text-muted">User Health Condition ID:</dt>
+                <dd class="col-sm-8 fw-semibold">@Model.UserHealthConditionId</dd>
+            </dl>
 
-    @* Arthritis Symptoms *@
-    @if (Model.ArthritisSymptoms != null && Model.ArthritisSymptoms.Any())
-    {
-        <h4>Arthritis Symptoms</h4>
-        <ul>
-            @foreach (var symptom in Model.ArthritisSymptoms)
+            @if (Model.ArthritisSymptoms != null && Model.ArthritisSymptoms.Any())
             {
-                <li>@symptom.Name</li>
+                <h5 class="mt-4">🦴 Arthritis Symptoms</h5>
+                <ul class="list-group list-group-flush mb-3">
+                    @foreach (var symptom in Model.ArthritisSymptoms)
+                    {
+                        <li class="list-group-item">@symptom.Name</li>
+                    }
+                </ul>
             }
-        </ul>
-    }
 
-    @* Migraine Symptoms *@
-    @if (Model.MigraineSymptoms != null && Model.MigraineSymptoms.Any())
-    {
-        <h4>Migraine Symptoms</h4>
-        <ul>
-            @foreach (var symptom in Model.MigraineSymptoms)
+            @if (Model.MigraineSymptoms != null && Model.MigraineSymptoms.Any())
             {
-                <li>@symptom.Name (@symptom.Type)</li>
+                <h5>🧠 Migraine Symptoms</h5>
+                <ul class="list-group list-group-flush mb-3">
+                    @foreach (var symptom in Model.MigraineSymptoms)
+                    {
+                        <li class="list-group-item">@symptom.Name <span class="text-muted">(@symptom.Type)</span></li>
+                    }
+                </ul>
             }
-        </ul>
-    }
 
-    @* Sinus Symptoms *@
-    @if (Model.SinusSymptoms != null && Model.SinusSymptoms.Any())
-    {
-        <h4>Sinus Symptoms</h4>
-        <ul>
-            @foreach (var symptom in Model.SinusSymptoms)
+            @if (Model.SinusSymptoms != null && Model.SinusSymptoms.Any())
             {
-                <li>@symptom.Name (@symptom.Type)</li>
+                <h5>😤 Sinus Symptoms</h5>
+                <ul class="list-group list-group-flush">
+                    @foreach (var symptom in Model.SinusSymptoms)
+                    {
+                        <li class="list-group-item">@symptom.Name <span class="text-muted">(@symptom.Type)</span></li>
+                    }
+                </ul>
             }
-        </ul>
-    }
-</div>
+        </div>
+    </div>
 
-<div class="mt-4">
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    <div class="mt-4 d-flex gap-3">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary btn-lg shadow-sm">✏️ Edit</a>
+        <a asp-action="Index" class="btn btn-secondary btn-lg shadow-sm">⬅️ Back to List</a>
+    </div>
 </div>
