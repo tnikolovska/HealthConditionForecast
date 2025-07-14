@@ -16,7 +16,6 @@ namespace HealthConditionForecast.Controllers
         {
             _context = context;
         }
-        [Authorize(Roles = "Admin,User")]
         // GET: ArthritisSymptomController
         public async Task<IActionResult> Index()
         {
@@ -27,7 +26,6 @@ namespace HealthConditionForecast.Controllers
         }
 
         // GET: ArthritisSymptomController/Details/5
-        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)

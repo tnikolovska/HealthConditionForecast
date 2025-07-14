@@ -17,14 +17,53 @@ namespace HealthConditionForecast.Controllers
         {
             _context = context;
         }
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
+        // GET: UserHealthConditionController
+        /* public async Task<IActionResult> AllUserHealthConditions()
+         {
+
+             var userHealthConditions = await _context.UserHealthConditions
+             .ToListAsync();
+             var usernames = await _context.Users
+                 .Where(u => userHealthConditions.Select(uhc => uhc.UserId).Contains(u.Id))
+                 .Select(u => u.UserName)
+                 .ToListAsync();
+             var healthConditionNames = await _context.HealthConditions
+                 .Where(hc => userHealthConditions.Select(uhc => (long)uhc.HealthConditionId).Contains(hc.Id))
+                 .Select(hc =>hc.Name)
+                 .ToListAsync();
+             UserHealthConditionList userHealthConditionList = new UserHealthConditionList
+             {
+                 usernames = usernames,
+                 healthConditionNames = healthConditionNames,
+             };
+
+             return View(userHealthConditionList);
+         }*/
+
+
+        [Authorize(Roles = "Admin,User")]
         // GET: UserHealthConditionController
         public async Task<IActionResult> Index()
         {
-            var userHealthConditions = await _context.UserHealthConditions
+            string userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            List<string> healthConditionNames=new List<string>();
+            string username = await _context.Users
+                .Where(u => u.Id == userId)
+                .Select(u => u.UserName)
+                .FirstOrDefaultAsync();
+            var userHealthConditions = await _context.UserHealthConditions.Where(u=>u.UserId.Equals(userId))
             .ToListAsync();
+            var healthconditionNames = await _context.UserHealthConditions
+                .Where(uhc => uhc.UserId == userId)
+                .Join(_context.HealthConditions,
+                      uhc => uhc.HealthConditionId,
+                      hc => hc.Id,
+                      (uhc, hc) => hc.Name)
+                .ToListAsync();
+            ViewData["UserName"] = username;
 
-            return View(userHealthConditions);
+            return View(healthconditionNames);
         }
 
         // GET: UserHealthConditionController/Details/5

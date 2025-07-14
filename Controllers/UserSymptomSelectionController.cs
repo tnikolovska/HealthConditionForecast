@@ -20,13 +20,21 @@ namespace HealthConditionForecast.Controllers
         {
             _context = context;
         }
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,User")]
         // GET: UserSymptomSelectionController
         public async Task<IActionResult> Index()
         {
-            var userSymptomSelections = await _context.UserSymptomSelections.Include(us => us.ArthritisSymptoms)
-                .Include(us=>us.MigraineSymptoms).Include(us => us.SinusSymptoms).ToListAsync();
-
+            var userId= User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var userHealthConditionIds = await _context.UserHealthConditions
+            .Where(u => u.UserId == userId)
+            .Select(u => u.Id)
+            .ToListAsync();
+             var userSymptomSelections = await _context.UserSymptomSelections
+            .Include(us => us.ArthritisSymptoms)
+            .Include(us => us.MigraineSymptoms)
+            .Include(us => us.SinusSymptoms)
+            .Where(us => userHealthConditionIds.Contains(us.UserHealthConditionId))
+            .ToListAsync();
             return View(userSymptomSelections);  // pass the list to the view
         }
 
@@ -503,22 +511,22 @@ namespace HealthConditionForecast.Controllers
         /* return View(selection);
      }*/
         // }
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         // GET: UserSymptomSelectionController/Delete/5
-        public async Task<IActionResult> Delete(long? id)
+        /*public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
                 return NotFound();
 
-            var selection = await _context.UserSymptomSelections
+            var selection = await _context.UserSymptomSelections.Include(s => s.ArthritisSymptoms).Include(s => s.MigraineSymptoms).Include(s => s.SinusSymptoms)
                 .FirstOrDefaultAsync(s => s.Id == id);
 
             if (selection == null)
                 return NotFound();
 
             return View(selection);
-        }
-        [Authorize(Roles = "Admin")]
+        }*/
+        /*[Authorize(Roles = "Admin")]
         // POST: UserSymptomSelectionController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -537,12 +545,12 @@ namespace HealthConditionForecast.Controllers
                 selection.MigraineSymptoms.Clear();
                 selection.SinusSymptoms.Clear();*/
 
-                _context.UserSymptomSelections.Remove(selection);
+               /* _context.UserSymptomSelections.Remove(selection);
                 await _context.SaveChangesAsync();
             }
 
             return RedirectToAction(nameof(Index));
-        }
+        }*/
 
     }
 }

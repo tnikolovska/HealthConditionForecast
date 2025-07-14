@@ -1,48 +1,57 @@
-﻿@model IEnumerable<HealthConditionForecast.Models.UserHealthCondition>
-
+﻿@model List<string>
 @{
-    ViewData["Title"] = "User Health Conditions";
+    ViewData["Title"] = "Your Health Conditions";
+    var username = ViewData["UserName"] as string;
 }
 
 <div class="container mt-5">
-    <h1 class="mb-4">User Health Conditions</h1>
+    <div class="text-center mb-4">
+        <h1 class="display-5">🧑‍⚕️ Health Conditions for <span class="text-primary">@username</span></h1>
+        <p class="lead">These are the health conditions currently associated with your profile.</p>
+    </div>
 
-    <p>
-        <a asp-action="Create" class="btn btn-primary btn-lg shadow-sm">
-            ➕ Create New
-        </a>
-    </p>
-
-    <table class="table table-striped table-hover align-middle shadow-sm">
-        <thead class="table-light">
-            <tr>
-                <th>User ID</th>
-                <th>Health Condition ID</th>
-                <th class="text-end">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
+    @if (Model != null && Model.Any())
+    {
+        <table id="healthConditionsTable" class="table table-bordered table-hover table-striped shadow-sm">
+            <thead class="table-dark">
                 <tr>
-                    <td>@item.UserId</td>
-                    <td>@item.HealthConditionId</td>
-                    <td class="text-end">
-                        @if (User.IsInRole("User"))
-                        {
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1">
-                                ✏️ Edit
-                            </a>
-                        }
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info me-1">
-                            ℹ️ Details
-                        </a>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">
-                            🗑️ Delete
-                        </a>
-                    </td>
+                    <th>Health Condition Name</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var condition in Model)
+                {
+                    <tr>
+                        <td>@condition</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-info text-center">
+            You have no health conditions assigned yet.
+        </div>
+    }
 </div>
+
+@section Scripts {
+    <!-- Include DataTables JS and CSS if not already included -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#healthConditionsTable').DataTable({
+                paging: true,
+                searching: true,
+                ordering: true,
+                lengthChange: false,
+                pageLength: 5
+            });
+        });
+    </script>
+}

@@ -22,7 +22,6 @@ namespace HealthConditionForecast.Controllers
              //return View(healthConditions);
              return View();
          }*/
-        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> Index()
         {
             var healthConditions = await _context.HealthConditions
@@ -31,7 +30,6 @@ namespace HealthConditionForecast.Controllers
 
             return View(healthConditions);  // pass the list to the view
         }
-        [Authorize(Roles = "Admin,User")]
         // GET: HealthConditionController/Details/5
         public async Task<IActionResult> Details(int id)
         {

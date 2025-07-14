@@ -4,6 +4,9 @@
     ViewData["Title"] = "Sinus Symptoms";
 }
 
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+
 <div class="container mt-5">
     <div class="text-center mb-4">
         <h1 class="display-5">🤧 Sinus Symptoms</h1>
@@ -16,7 +19,7 @@
 
     <div class="card shadow">
         <div class="card-body">
-            <table class="table table-hover align-middle">
+            <table id="sinusSymptomsTable" class="table table-hover align-middle">
                 <thead class="table-primary">
                     <tr>
                         <th>Name</th>
@@ -53,3 +56,27 @@
         </div>
     </div>
 </div>
+
+<!-- jQuery and DataTables JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#sinusSymptomsTable').DataTable({
+                pageLength: 10,
+                lengthChange: false,
+                ordering: true,
+                searching: true,
+                language: {
+                    search: "Search symptoms:",
+                    paginate: {
+                        previous: "&laquo;",
+                        next: "&raquo;"
+                    }
+                }
+            });
+        });
+    </script>
+}

@@ -16,7 +16,7 @@ namespace HealthConditionForecast.Controllers
         {
             _context = context;
         }
-        [Authorize(Roles = "Admin,User")]
+       
         // GET: SinusSymptomController
         public async Task<IActionResult> Index()
         {
@@ -26,7 +26,6 @@ namespace HealthConditionForecast.Controllers
             return View(sinusSymptoms);
         }
         // GET: SinusSymptomController/Details/5
-        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
