@@ -10,11 +10,11 @@
     <div class="card shadow-sm">
         <div class="card-body">
             <dl class="row">
-                <dt class="col-sm-4 text-muted">Selection ID:</dt>
-                <dd class="col-sm-8 fw-semibold">@Model.Id</dd>
+                <!--<dt class="col-sm-4 text-muted">Selection ID:</dt>
+                <dd class="col-sm-8 fw-semibold">@Model.Id</dd>-->
 
-                <dt class="col-sm-4 text-muted">User Health Condition ID:</dt>
-                <dd class="col-sm-8 fw-semibold">@Model.UserHealthConditionId</dd>
+                <!--<dt class="col-sm-4 text-muted">User Health Condition ID:</dt>
+                <dd class="col-sm-8 fw-semibold">@Model.UserHealthConditionId</dd>-->
             </dl>
 
             @if (Model.ArthritisSymptoms != null && Model.ArthritisSymptoms.Any())
@@ -53,7 +53,7 @@
     </div>
 
     <div class="mt-4 d-flex gap-3">
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary btn-lg shadow-sm">✏️ Edit</a>
+        <!--<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary btn-lg shadow-sm">✏️ Edit</a>-->
         <a asp-action="Index" class="btn btn-secondary btn-lg shadow-sm">⬅️ Back to List</a>
     </div>
 </div>

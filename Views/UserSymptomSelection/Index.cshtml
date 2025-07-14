@@ -1,13 +1,23 @@
 ﻿@model IEnumerable<HealthConditionForecast.Models.UserSymptomSelection>
+@using Microsoft.AspNetCore.Identity
 
 @{
-    ViewData["Title"] = "User Symptom Selections";
+    ViewData["Title"] = "My Symptom Selections";
+    var userEmail = User.Identity?.Name; // Assumes email is used as username
 }
 
-<div class="container mt-5">
-    <h1 class="mb-4">🩺 User Symptom Selections</h1>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
-    <table class="table table-hover shadow-sm">
+<div class="container mt-5">
+    <h1 class="mb-3">🩺 My Symptom Selections</h1>
+
+    <div class="mb-4">
+        <strong>User Email:</strong> <span class="text-primary">@userEmail</span>
+    </div>
+
+    <table id="symptomTable" class="table table-bordered table-hover align-middle">
         <thead class="table-light">
             <tr>
                 <th>🦴 Arthritis Symptoms</th>
@@ -27,7 +37,7 @@
                         }
                         else
                         {
-                            <em class="text-muted">None</em>
+                            <span class="text-muted"><em>None</em></span>
                         }
                     </td>
                     <td>
@@ -37,7 +47,7 @@
                         }
                         else
                         {
-                            <em class="text-muted">None</em>
+                            <span class="text-muted"><em>None</em></span>
                         }
                     </td>
                     <td>
@@ -47,25 +57,35 @@
                         }
                         else
                         {
-                            <em class="text-muted">None</em>
+                            <span class="text-muted"><em>None</em></span>
                         }
                     </td>
                     <td class="text-end">
-                        <div class="btn-group" role="group">
-                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm">ℹ️ Details</a>
-                            @if (User.IsInRole("Admin"))
-                            {
-                               <!--<a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm">✏️ Edit</a>-->
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">🗑️ Delete</a>
-                            }
-                        </div>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm">ℹ️ Details</a>
+                        <!--<a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">🗑️ Delete</a>-->
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-
-    <!--<div class="mt-4">
-        <a asp-action="SelectSymptoms" class="btn btn-success btn-lg shadow-sm">➕ Create New Selection</a>
-    </div>-->
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#symptomTable').DataTable({
+                pageLength: 5,
+                lengthMenu: [5, 10, 25, 50],
+                language: {
+                    search: "🔍 Search:",
+                    lengthMenu: "Show _MENU_ entries per page",
+                    info: "Showing _START_ to _END_ of _TOTAL_ symptoms",
+                    paginate: {
+                        previous: "⏮️",
+                        next: "⏭️"
+                    }
+                }
+            });
+        });
+    </script>
+}

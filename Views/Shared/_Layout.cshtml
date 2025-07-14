@@ -27,7 +27,11 @@
                         <a class="nav-link dropdown-toggle" href="#" id="healthDropdown" data-bs-toggle="dropdown">Health Conditions</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" asp-controller="HealthCondition" asp-action="Index">List</a></li>
-                            <li><a class="dropdown-item" asp-controller="HealthCondition" asp-action="Create">Create</a></li>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li><a class="dropdown-item" asp-controller="HealthCondition" asp-action="Create">Create</a></li>
+                            }
+                            
                         </ul>
                     </li>
 
@@ -35,7 +39,11 @@
                         <a class="nav-link dropdown-toggle" href="#" id="arthritisDropdown" data-bs-toggle="dropdown">Arthritis</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" asp-controller="ArthritisSymptom" asp-action="Index">Symptoms</a></li>
-                            <li><a class="dropdown-item" asp-controller="ArthritisSymptom" asp-action="Create">Create Symptom</a></li>
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li><a class="dropdown-item" asp-controller="ArthritisSymptom" asp-action="Create">Create Symptom</a></li>
+                            }
                             <li><a class="dropdown-item" asp-controller="UserHealthCondition" asp-action="Create">Forecast</a></li>
                         </ul>
                     </li>
@@ -44,7 +52,10 @@
                         <a class="nav-link dropdown-toggle" href="#" id="migraineDropdown" data-bs-toggle="dropdown">Migraine</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" asp-controller="MigraineSymptom" asp-action="Index">Symptoms</a></li>
-                            <li><a class="dropdown-item" asp-controller="MigraineSymptom" asp-action="Create">Create Symptom</a></li>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li><a class="dropdown-item" asp-controller="MigraineSymptom" asp-action="Create">Create Symptom</a></li>
+                            }
                             <li><a class="dropdown-item" asp-controller="UserHealthCondition" asp-action="Create">Forecast</a></li>
                         </ul>
                     </li>
@@ -53,7 +64,10 @@
                         <a class="nav-link dropdown-toggle" href="#" id="sinusDropdown" data-bs-toggle="dropdown">Sinus</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" asp-controller="SinusSymptom" asp-action="Index">Symptoms</a></li>
-                            <li><a class="dropdown-item" asp-controller="SinusSymptom" asp-action="Create">Create Symptom</a></li>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li><a class="dropdown-item" asp-controller="SinusSymptom" asp-action="Create">Create Symptom</a></li>
+                            }
                             <li><a class="dropdown-item" asp-controller="UserHealthCondition" asp-action="Create">Forecast</a></li>
                         </ul>
                     </li>
@@ -64,6 +78,7 @@
                             <li><a class="dropdown-item" asp-controller="UserHealthCondition" asp-action="Index">User Conditions</a></li>
                             <li><a class="dropdown-item" asp-controller="UserHealthCondition" asp-action="Create">Assign Health Condition</a></li>
                             <li><a class="dropdown-item" asp-controller="UserSymptomSelection" asp-action="Index">Symptom Selections</a></li>
+                            
                         </ul>
                     </li>
                 </ul>
