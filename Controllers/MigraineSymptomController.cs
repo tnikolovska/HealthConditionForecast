@@ -60,23 +60,28 @@ namespace HealthConditionForecast.Controllers
         public async Task<IActionResult> Create([Bind("Name,Description,HealthConditionId,Type")] MigraineSympton symptom)
         {
             HealthCondition healthCondition = await _context.HealthConditions.FirstOrDefaultAsync(hc => hc.Id == symptom.HealthConditionId);
-            if (healthCondition.Name == "Migraine Headache")
+            if (healthCondition != null)
             {
-
-                if (ModelState.IsValid)
+                if (healthCondition.Name == "Migraine Headache")
                 {
-                    _context.MigraineSymptons.Add(symptom);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction("Index");
 
+                    if (ModelState.IsValid)
+                    {
+                        _context.MigraineSymptons.Add(symptom);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction("Index");
+
+                    }
+
+                    ViewData["HealthConditionId"] = new SelectList(_context.HealthConditions, "Id", "Name", symptom.HealthConditionId);
+                    //ViewData["HealthConditionId"] = healthConditionId;
+                    ViewData["MigraineType"] = new SelectList(Enum.GetValues(typeof(MigraineType)), symptom.Type);
+                    return View(symptom);
                 }
-
-                ViewData["HealthConditionId"] = new SelectList(_context.HealthConditions, "Id", "Name", symptom.HealthConditionId);
-                //ViewData["HealthConditionId"] = healthConditionId;
-                ViewData["MigraineType"] = new SelectList(Enum.GetValues(typeof(MigraineType)), symptom.Type);
                 return View(symptom);
+
             }
-            return View(symptom);
+            else return RedirectToAction("Create", "MigraineSymptom");
 
         }
         [Authorize(Roles = "Admin")]

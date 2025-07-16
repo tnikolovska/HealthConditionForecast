@@ -1,12 +1,14 @@
 ﻿using HealthConditionForecast.Data;
 using HealthConditionForecast.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using static System.Collections.Specialized.BitVector32;
 
@@ -56,6 +58,24 @@ namespace HealthConditionForecast.Controllers
 
             return View(selection);
         }
+
+
+
+        public IActionResult ValidationMessage(int userHealthConditionId)
+        {
+            var message = TempData["ValidationMessage"] as string;
+            ViewBag.userHealthConditionId = userHealthConditionId;
+            if (string.IsNullOrEmpty(message))
+            {
+                // No message, redirect back or somewhere
+                return RedirectToAction("Index");
+            }
+            ViewBag.Message = message;
+            return View();
+        }
+
+
+
         [Authorize(Roles = "Admin,User")]
         public IActionResult SelectSymptoms(int userHealthConditionId)
         {
@@ -161,6 +181,8 @@ namespace HealthConditionForecast.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SelectSymptoms(int userHealthConditionId, List<long> selectedSymptoms)
         {
+            string validationMessage = "";
+
             if (selectedSymptoms == null || selectedSymptoms.Count == 0)
             {
                 ModelState.AddModelError("", "Please select at least one symptom.");
@@ -181,10 +203,10 @@ namespace HealthConditionForecast.Controllers
                 var selection = new UserSymptomSelection
                 {
                     UserHealthConditionId = (int)userHealthCondition.Id
-                     
-                    
+
+
                 };
-                selection.MigraineSymptoms=new List<MigraineSympton>();
+                selection.MigraineSymptoms = new List<MigraineSympton>();
                 selection.SinusSymptoms = new List<SinusSymptom>();
                 selection.ArthritisSymptoms = new List<ArthritisSymtom>();
 
@@ -195,71 +217,90 @@ namespace HealthConditionForecast.Controllers
                 {
                     selection.MigraineSymptoms = await _context.MigraineSymptons
                         .Where(s => selectedSymptoms.Contains(s.Id)).ToListAsync();
-                    if ((selection.MigraineSymptoms.Count(m => m.Type == MigraineType.BeforeHeadache)) > 0^(selection.MigraineSymptoms.Count(m=>m.Type==MigraineType.MigraineWithAura))>0^(selection.MigraineSymptoms.Count(m => m.Type == MigraineType.DuringAttack))>0) {
+                    if ((selection.MigraineSymptoms.Count(m => m.Type == MigraineType.BeforeHeadache)) > 0 ^ (selection.MigraineSymptoms.Count(m => m.Type == MigraineType.MigraineWithAura)) > 0 ^ (selection.MigraineSymptoms.Count(m => m.Type == MigraineType.DuringAttack)) > 0)
+                    {
                         _context.UserSymptomSelections.Add(selection);
                         await _context.SaveChangesAsync();
                         return RedirectToAction("ForecastMigraine", "Forecast");
+                    }
+                    else {
+                        validationMessage = "⚠️ Please select at least one symptom from any of the migraine categories (Before Headache, Migraine With Aura, or During Attack) to proceed.";
+                        TempData["ValidationMessage"] = validationMessage;
+                        return RedirectToAction("ValidationMessage",new { userHealthConditionId = userHealthConditionId });
                     }
 
                 }
                 else if (conditionName.Contains("Sinus", StringComparison.OrdinalIgnoreCase))
                 {
-                    
-                        selection.SinusSymptoms = await _context.SinusSymptoms
-                       .Where(s => selectedSymptoms.Contains(s.Id)).ToListAsync();
+
+                    selection.SinusSymptoms = await _context.SinusSymptoms
+                   .Where(s => selectedSymptoms.Contains(s.Id)).ToListAsync();
                     if (((selection.SinusSymptoms.Count(s => s.Type == SinusType.Major)) >= 1 && (selection.SinusSymptoms.Count(s => s.Type == SinusType.Minor)) == 2) || (selection.SinusSymptoms.Count(s => s.Type == SinusType.Major)) == 2)
                     {
                         _context.UserSymptomSelections.Add(selection);
                         await _context.SaveChangesAsync();
                         return RedirectToAction("ForecastSinus", "Forecast");
                     }
-                   
+                    else {
+                        validationMessage = "⚠️ Please select at least 2 major symptoms or 1 major and 2 minor sinus symptoms.";
+                        TempData["ValidationMessage"] = validationMessage;
+                        return RedirectToAction("ValidationMessage", new { userHealthConditionId = userHealthConditionId });
+                    }
+
                 }
                 else if (conditionName.Contains("Arthritis", StringComparison.OrdinalIgnoreCase))
                 {
-                   
-                        selection.ArthritisSymptoms = await _context.ArthritisSymtoms
-                        .Where(s => selectedSymptoms.Contains(s.Id)).ToListAsync();
+
+                    selection.ArthritisSymptoms = await _context.ArthritisSymtoms
+                    .Where(s => selectedSymptoms.Contains(s.Id)).ToListAsync();
                     if (selection.ArthritisSymptoms.Count() > 0)
                     {
                         _context.UserSymptomSelections.Add(selection);
                         await _context.SaveChangesAsync();
                         return RedirectToAction("ForecastArthritis", "Forecast");
                     }
-                    
+                    else {
+                        validationMessage = "⚠️ Please select at least one arthritis symptom.";
+                        TempData["ValidationMessage"] = validationMessage;
+                        return RedirectToAction("ValidationMessage", new { userHealthConditionId = userHealthConditionId });
+                    }
+
                 }
 
-               
+
+            }
+            else { 
+                return RedirectToAction("SelectSymptoms", "UserSymptomSelection", new { userHealthConditionId = userHealthConditionId });
             }
 
             // Reload symptom list for redisplay if validation fails
-            var healthCondition1 = await _context.HealthConditions.FindAsync((long)healthCondition.Id);
-            ViewData["HealthConditionId"] = healthCondition.Id;
-            ViewBag.ConditionType = healthCondition1?.Name;
+            /*var healthCondition1 = await _context.HealthConditions.FindAsync((long)healthCondition.Id);
+         ViewData["HealthConditionId"] = healthCondition.Id;
+         ViewBag.ConditionType = healthCondition1?.Name;
 
-            if (healthCondition != null)
-            {
-                if (healthCondition.Result.Name.Contains("Migraine", StringComparison.OrdinalIgnoreCase))
-                {
-                    ViewBag.Symptoms = new MultiSelectList(
-                        _context.MigraineSymptons.Where(s => s.HealthConditionId == healthCondition1.Id),
-                        "Id", "Name", selectedSymptoms);
-                }
-                else if (healthCondition.Result.Name.Contains("Sinus", StringComparison.OrdinalIgnoreCase))
-                {
-                    ViewBag.Symptoms = new MultiSelectList(
-                        _context.SinusSymptoms.Where(s => s.HealthConditionId == healthCondition1.Id),
-                        "Id", "Name", selectedSymptoms);
-                }
-                else if (healthCondition.Result.Name.Contains("Arthritis", StringComparison.OrdinalIgnoreCase))
-                {
-                    ViewBag.Symptoms = new MultiSelectList(
-                        _context.ArthritisSymtoms.Where(s => s.HealthConditionId == healthCondition1.Id),
-                        "Id", "Name", selectedSymptoms);
-                }
-            }
+         if (healthCondition != null)
+         {
+             if (healthCondition.Result.Name.Contains("Migraine", StringComparison.OrdinalIgnoreCase))
+             {
+                 ViewBag.Symptoms = new MultiSelectList(
+                     _context.MigraineSymptons.Where(s => s.HealthConditionId == healthCondition1.Id),
+                     "Id", "Name", selectedSymptoms);
+             }
+             else if (healthCondition.Result.Name.Contains("Sinus", StringComparison.OrdinalIgnoreCase))
+             {
+                 ViewBag.Symptoms = new MultiSelectList(
+                     _context.SinusSymptoms.Where(s => s.HealthConditionId == healthCondition1.Id),
+                     "Id", "Name", selectedSymptoms);
+             }
+             else if (healthCondition.Result.Name.Contains("Arthritis", StringComparison.OrdinalIgnoreCase))
+             {
+                 ViewBag.Symptoms = new MultiSelectList(
+                     _context.ArthritisSymtoms.Where(s => s.HealthConditionId == healthCondition1.Id),
+                     "Id", "Name", selectedSymptoms);
+             }
+         }*/
 
-            return View();
+            return RedirectToAction("SelectSymptoms", "UserSymptomSelection", new { userHealthConditionId = userHealthConditionId });
         }
 
        /* [Authorize(Roles = "Admin,User")]
