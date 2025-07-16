@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Validation Message";
+}
+
+<div class="container mt-5">
+    <div class="alert alert-warning" role="alert">
+        @ViewBag.Message
+    </div>
+
+    <a asp-action="SelectSymptoms" asp-route-userHealthConditionId="@ViewBag.UserHealthConditionId" class="btn btn-primary">
+        Back to Symptoms Selection
+    </a>
+</div>

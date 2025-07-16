@@ -1,7 +1,14 @@
-﻿@{
+﻿@using System.Text.Json
+@{
     ViewData["Title"] = "Select Symptoms";
     var conditionType = ViewBag.ConditionType as string;
     var userHealthConditionId = ViewData["userHealthConditionId"];
+    var beforeheadache = ViewBag.BeforeHeadache as MultiSelectList;
+    var migraineWithAura = ViewBag.MigraineWithAura as MultiSelectList;
+    var duringAttack = ViewBag.DuringAttack as MultiSelectList;
+    var major = ViewBag.Major as MultiSelectList;
+    var minor = ViewBag.Minor as MultiSelectList;
+    var symptoms = ViewBag.Symptoms as MultiSelectList;
 }
 
 <div class="container mt-5">
@@ -20,7 +27,7 @@
                             @foreach (var item in (MultiSelectList)ViewBag.BeforeHeadache)
                             {
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="selectedSymptoms" value="@item.Value" id="symptom_@item.Value" />
+                                    <input class="form-check-input migraine-before" type="checkbox" name="selectedSymptoms" value="@item.Value" id="symptom_@item.Value" />
                                     <label class="form-check-label" for="symptom_@item.Value">@item.Text</label>
                                 </div>
                             }
@@ -35,7 +42,7 @@
                             @foreach (var item in (MultiSelectList)ViewBag.MigraineWithAura)
                             {
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="selectedSymptoms" value="@item.Value" id="symptom_@item.Value" />
+                                    <input class="form-check-input migraine-aura" type="checkbox" name="selectedSymptoms" value="@item.Value" id="symptom_@item.Value" />
                                     <label class="form-check-label" for="symptom_@item.Value">@item.Text</label>
                                 </div>
                             }
@@ -50,7 +57,7 @@
                             @foreach (var item in (MultiSelectList)ViewBag.DuringAttack)
                             {
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="selectedSymptoms" value="@item.Value" id="symptom_@item.Value" />
+                                    <input class="form-check-input migraine-attack" type="checkbox" name="selectedSymptoms" value="@item.Value" id="symptom_@item.Value" />
                                     <label class="form-check-label" for="symptom_@item.Value">@item.Text</label>
                                 </div>
                             }
@@ -67,7 +74,7 @@
                             @foreach (var item in (MultiSelectList)ViewBag.Major)
                             {
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="selectedSymptoms" value="@item.Value" id="symptom_@item.Value" />
+                                    <input class="form-check-input sinus-major" type="checkbox" name="selectedSymptoms" value="@item.Value" id="symptom_@item.Value" />
                                     <label class="form-check-label" for="symptom_@item.Value">@item.Text</label>
                                 </div>
                             }
@@ -82,7 +89,7 @@
                             @foreach (var item in (MultiSelectList)ViewBag.Minor)
                             {
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="selectedSymptoms" value="@item.Value" id="symptom_@item.Value" />
+                                    <input class="form-check-input sinus-minor" type="checkbox" name="selectedSymptoms" value="@item.Value" id="symptom_@item.Value" />
                                     <label class="form-check-label" for="symptom_@item.Value">@item.Text</label>
                                 </div>
                             }
@@ -99,17 +106,18 @@
                             @foreach (var item in (MultiSelectList)ViewBag.Symptoms)
                             {
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="selectedSymptoms" value="@item.Value" id="symptom_@item.Value" />
+                                    <input class="form-check-input arthritis" type="checkbox" name="selectedSymptoms" value="@item.Value" id="symptom_@item.Value" />
                                     <label class="form-check-label" for="symptom_@item.Value">@item.Text</label>
                                 </div>
                             }
                         </div>
                     </div>
                 }
-                else
-                {
-                    <div class="alert alert-warning">No symptoms available for this health condition.</div>
-                }
+
+                <div id="validationMessage" class="alert alert-warning alert-dismissible fade d-none" role="alert">
+                </div>
+
+
 
                 <div class="d-flex justify-content-between mt-4">
                     <a asp-action="Index" class="btn btn-secondary btn-lg px-4">⬅️ Cancel</a>
@@ -121,5 +129,69 @@
 </div>
 
 @section Scripts {
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const condition = "@conditionType".trim();
+            const form = document.querySelector("form");
+            const validationMessage = document.getElementById("validationMessage");
+
+            const countChecked = (selector) =>
+                document.querySelectorAll(`${selector}:checked`).length;
+           
+            const showMessage = (msg) => {
+                validationMessage.innerHTML = `
+                    ${msg}
+                    <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+                validationMessage.classList.remove("d-none");
+                validationMessage.classList.add("show");
+                validationMessage.scrollIntoView({ behavior: "smooth" });
+            };
+            
+
+            console.log("Condition Type:", condition);
+               
+
+
+            form.addEventListener("submit", function (e) {
+                validationMessage.classList.add("d-none");
+
+                if (condition === "Migraine") {
+                    const before = countChecked(".migraine-before");
+                    const aura = countChecked(".migraine-aura");
+                    const attack = countChecked(".migraine-attack");
+
+                    if (before < 1 && aura < 1 && attack < 1) {
+                        e.preventDefault();
+                        showMessage("⚠️ Please select at least one symptom from the migraine categories to proceed.");
+                    }
+                }
+
+                if (condition === "Sinus") {
+                    const major = countChecked(".sinus-major");
+                    const minor = countChecked(".sinus-minor");
+
+                    if (!(major >= 2 || (major >= 1 && minor >= 2))) {
+                        e.preventDefault();
+                        showMessage("⚠️ Please select at least 2 major symptoms or 1 major and 2 minor sinus symptoms.");
+                    }
+                }
+
+                if (condition === "Arthritis") {
+                    const arthritis = countChecked(".arthritis");
+                    if (arthritis < 1) {
+                        e.preventDefault();
+                        showMessage("⚠️ Please select at least one arthritis symptom.");
+                    }
+                }
+            });
+        });
+    </script>
+
 }

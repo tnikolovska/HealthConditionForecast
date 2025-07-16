@@ -54,19 +54,22 @@ namespace HealthConditionForecast.Controllers
         public async Task<IActionResult> Create([Bind("Name,Description,HealthConditionId")] ArthritisSymtom symptom)
         {
             HealthCondition healthCondition = await _context.HealthConditions.FirstOrDefaultAsync(hc => hc.Id == symptom.HealthConditionId);
-            if (healthCondition.Name=="Arthritis")
-            {
-                if (ModelState.IsValid)
+            if (healthCondition != null) {
+                if (healthCondition.Name == "Arthritis")
                 {
-                    _context.ArthritisSymtoms.Add(symptom);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction("Index");
+                    if (ModelState.IsValid)
+                    {
+                        _context.ArthritisSymtoms.Add(symptom);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction("Index");
 
+                    }
                 }
-             }
 
-            ViewData["HealthConditionId"] = new SelectList(_context.HealthConditions, "Id", "Name", symptom.HealthConditionId);
-            return View(symptom);
+                ViewData["HealthConditionId"] = new SelectList(_context.HealthConditions, "Id", "Name", symptom.HealthConditionId);
+                return View(symptom);
+            }
+            else return RedirectToAction("Create", "ArthritisSymptom");
         }
         [Authorize(Roles = "Admin")]
         // GET: ArthritisSymptomController/Edit/5
