@@ -13,7 +13,7 @@
         <p class="lead">Overview of all forecast entries by category, value, and date.</p>
     </div>
 
-    <table id="forecastTable" class="table table-striped table-bordered align-middle">
+    <table id="forecastTable" class="table table-striped table-bordered align-middle" style="width:100%">
         <thead class="table-dark">
             <tr>
                 <th>Date</th>
@@ -32,7 +32,6 @@
             {
                 var rowClass = "";
                 var badgeColor = "bg-secondary";
-
                 switch (item.Category)
                 {
                     case "High Risk":
@@ -80,24 +79,25 @@
     </table>
 </div>
 
-<!-- DataTables JS -->
+<!-- jQuery + DataTables JS -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 <script>
     $(document).ready(function () {
         $('#forecastTable').DataTable({
-            pageLength: 10,
-            lengthChange: false,
-            ordering: true,
-            searching: true,
-            language: {
-                search: "Filter forecasts:",
-                paginate: {
-                    previous: "&laquo;",
-                    next: "&raquo;"
+            "pageLength": 10,
+            "lengthChange": false, // hide "show X entries"
+            "ordering": true,
+            "searching": true,
+            "language": {
+                "search": "Filter forecasts:",
+                "paginate": {
+                    "previous": "&laquo;",
+                    "next": "&raquo;"
                 }
             }
         });
     });
 </script>
+
