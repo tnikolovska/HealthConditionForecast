@@ -60,55 +60,70 @@ namespace HealthConditionForecast.Controllers
             return forecastList;
         }
         [Authorize(Roles = "Admin,User")]
+        
         public async Task<IActionResult> ForecastMigraine() 
         {
             if (User.Identity.IsAuthenticated)
             {
-                List<Forecast> list = new List<Forecast>();
-                HttpResponseMessage response = await _httpClient.GetAsync("http://dataservice.accuweather.com/indices/v1/daily/5day/227397/27?apikey=OeYyggfEf9RAfVh8RArY7paEcdyI8Kqz");
-                if (response.IsSuccessStatusCode)
+                if (TempData["CanShowForecast"] as string == "yes")
                 {
-                    string forecastSearchResults = await response.Content.ReadAsStringAsync();
-                    list = ParseJSON(forecastSearchResults);
+                    List<Forecast> list = new List<Forecast>();
+                    HttpResponseMessage response = await _httpClient.GetAsync("http://dataservice.accuweather.com/indices/v1/daily/5day/227397/27?apikey=OeYyggfEf9RAfVh8RArY7paEcdyI8Kqz");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string forecastSearchResults = await response.Content.ReadAsStringAsync();
+                        list = ParseJSON(forecastSearchResults);
+                    }
+                    return View(list.ToList());
                 }
-                return View(list.ToList());
+                else return RedirectToAction("Create", "UserHealthCondition");
             }
             else
                 return Redirect("/Identity/Account/Login");
 
         }
         [Authorize(Roles = "Admin,User")]
+
         public async Task<IActionResult> ForecastSinus()
         {
             if (User.Identity.IsAuthenticated)
             {
-                List<Forecast> list = new List<Forecast>();
-                HttpResponseMessage response = await _httpClient.GetAsync("http://dataservice.accuweather.com/indices/v1/daily/5day/227397/30?apikey=OeYyggfEf9RAfVh8RArY7paEcdyI8Kqz");
-                if (response.IsSuccessStatusCode)
+                if (TempData["CanShowForecast"] as string == "yes")
                 {
-                    string forecastSearchResults = await response.Content.ReadAsStringAsync();
-                    list = ParseJSON(forecastSearchResults);
+                    List<Forecast> list = new List<Forecast>();
+                    HttpResponseMessage response = await _httpClient.GetAsync("http://dataservice.accuweather.com/indices/v1/daily/5day/227397/30?apikey=OeYyggfEf9RAfVh8RArY7paEcdyI8Kqz");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string forecastSearchResults = await response.Content.ReadAsStringAsync();
+                        list = ParseJSON(forecastSearchResults);
 
+                    }
+                    return View(list.ToList());
                 }
-                return View(list.ToList());
+                else return RedirectToAction("Create", "UserHealthCondition");
             }
             else
                 return Redirect("/Identity/Account/Login");
         }
         [Authorize(Roles = "Admin,User")]
+
         public async Task<IActionResult> ForecastArthritis()
         {
             if (User.Identity.IsAuthenticated)
             {
-                List<Forecast> list = new List<Forecast>();
-                HttpResponseMessage response = await _httpClient.GetAsync("http://dataservice.accuweather.com/indices/v1/daily/5day/227397/21?apikey=OeYyggfEf9RAfVh8RArY7paEcdyI8Kqz");
-                if (response.IsSuccessStatusCode)
+                if (TempData["CanShowForecast"] as string == "yes")
                 {
-                    string forecastSearchResults = await response.Content.ReadAsStringAsync();
-                    list = ParseJSON(forecastSearchResults);
+                    List<Forecast> list = new List<Forecast>();
+                    HttpResponseMessage response = await _httpClient.GetAsync("http://dataservice.accuweather.com/indices/v1/daily/5day/227397/21?apikey=OeYyggfEf9RAfVh8RArY7paEcdyI8Kqz");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string forecastSearchResults = await response.Content.ReadAsStringAsync();
+                        list = ParseJSON(forecastSearchResults);
 
+                    }
+                    return View(list.ToList());
                 }
-                return View(list.ToList());
+                else return RedirectToAction("Create", "UserHealthCondition");
             }
             else
                 return Redirect("/Identity/Account/Login");

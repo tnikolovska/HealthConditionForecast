@@ -14,7 +14,12 @@
     </div>
 
     <div class="d-flex justify-content-end mb-3">
-        <a asp-action="Create" class="btn btn-success btn-lg">➕ Create New Symptom</a>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Create" class="btn btn-success btn-lg">➕ Create New Symptom</a>
+        
+        }
+        
     </div>
 
     <div class="card shadow">

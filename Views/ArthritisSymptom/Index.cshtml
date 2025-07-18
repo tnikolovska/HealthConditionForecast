@@ -14,7 +14,12 @@
     </div>
 
     <div class="d-flex justify-content-end mb-3">
-        <a asp-action="Create" class="btn btn-success btn-lg">➕ Create New Arthritis Symptom</a>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Create" class="btn btn-success btn-lg">➕ Create New Arthritis Symptom</a>
+
+        }
+       
     </div>
 
     <div class="card shadow">
@@ -54,9 +59,13 @@
 </div>
 
 <!-- jQuery and DataTables JS -->
+
+
+<!-- Your table markup here -->
+<!-- Load JS in the correct order -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-
+@section Scripts {
 <script>
     $(document).ready(function () {
         $('#arthritisSymptomsTable').DataTable({
@@ -73,4 +82,6 @@
             }
         });
     });
-</script>
+    </script>
+  
+    }
