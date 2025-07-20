@@ -3,6 +3,7 @@ using System;
 using HealthConditionForecast.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HealthConditionForecast.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250720094435_UpdatedSymptomSelectionModel")]
+    partial class UpdatedSymptomSelectionModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.7");
@@ -135,15 +138,10 @@ namespace HealthConditionForecast.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<long?>("SymptomId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("UserHealthConditionId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("SymptomId");
 
                     b.ToTable("UserSymptomSelections");
                 });
@@ -422,13 +420,6 @@ namespace HealthConditionForecast.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("HealthConditionForecast.Models.UserSymptomSelection", b =>
-                {
-                    b.HasOne("HealthConditionForecast.Models.Symptom", null)
-                        .WithMany("UserSymptomSelections")
-                        .HasForeignKey("SymptomId");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -504,11 +495,6 @@ namespace HealthConditionForecast.Migrations
             modelBuilder.Entity("HealthConditionForecast.Models.HealthCondition", b =>
                 {
                     b.Navigation("Symptoms");
-                });
-
-            modelBuilder.Entity("HealthConditionForecast.Models.Symptom", b =>
-                {
-                    b.Navigation("UserSymptomSelections");
                 });
 
             modelBuilder.Entity("HealthConditionForecast.Models.UserSymptomSelection", b =>

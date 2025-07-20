@@ -42,10 +42,11 @@ namespace HealthConditionForecast.Data
             //modelBuilder.Entity<ArthritisSymtom>().HasKey(a => a.Id);
             // modelBuilder.Entity<MigraineSympton>().HasKey(m => m.Id);
             // modelBuilder.Entity<SinusSymptom>().HasKey(sinus => sinus.Id);
-
-
-            // other model configuration
         }
 
+
+        // other model configuration
     }
-}
+
+    }
+
