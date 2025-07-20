@@ -24,7 +24,7 @@ namespace HealthConditionForecast.Controllers
         {
             _context = context;
         }
-        /*[Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "Admin,User")]
         // GET: UserSymptomSelectionController
         public async Task<IActionResult> Index()
         {
@@ -40,7 +40,7 @@ namespace HealthConditionForecast.Controllers
             .Where(us => userHealthConditionIds.Contains(us.UserHealthConditionId))
             .ToListAsync();
             return View(userSymptomSelections);  // pass the list to the view
-        }*/
+        }
 
         // GET: UserSymptomSelectionController/Details/5
         [Authorize(Roles = "Admin,User")]
