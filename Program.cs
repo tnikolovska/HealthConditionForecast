@@ -25,6 +25,13 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()  // ?? Include Identi
     .AddDefaultUI();
 
 
+// added new code
+
+/*builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>() // Important for role seeding
+    .AddEntityFrameworkStores<ApplicationDbContext>();*/
+
+
 
 
 /*builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -41,8 +48,10 @@ builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
-
-
+/*await using var scope = app.Services.CreateAsyncScope();
+var services = scope.ServiceProvider;
+await SeedRolesAsync(services);
+await AssignAdminRoleToUserAsync(services, "nikolovskat95@gmail.com");*/
 
 /*using (var scope = app.Services.CreateScope())
 {
@@ -75,12 +84,14 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
+    app.UseDeveloperExceptionPage();
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseRouting();
 
 // this is added
@@ -89,26 +100,34 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.MapStaticAssets();
+//app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
-app.MapRazorPages()
-   .WithStaticAssets();
+app.MapRazorPages();
+   //.WithStaticAssets();
 
 // Sed roles and assign Admin role to a specific user
-using (var scope = app.Services.CreateScope())
+using (var scope1 = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
+    var services1 = scope1.ServiceProvider;
+    try
+    {
+        var context = services1.GetRequiredService<ApplicationDbContext>();
+        context.Database.Migrate(); // ? Ensure all migrations are applied
 
-    // Create roles
-    await SeedRolesAsync(services);
-
-    // Assign a specific user to Admin role
-    await AssignAdminRoleToUserAsync(services, "nikolovskat95@gmail.com");
+        // OPTIONAL: Seed roles and admin user
+        await SeedRolesAsync(services1);
+        await AssignAdminRoleToUserAsync(services1, "nikolovskat95@gmail.com");
+    }
+    catch (Exception ex)
+    {
+        var logger = services1.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while migrating or seeding the database.");
+    }
 }
 
 app.Run();
