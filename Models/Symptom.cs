@@ -9,10 +9,12 @@ namespace HealthConditionForecast.Models
         public string Description { get; set; }
         public long HealthConditionId { get; set; }
         //public HealthCondition HealthCondition { get; set; }
-
-
-
-
-
+            
     }
+
+
+
+
+
 }
+
