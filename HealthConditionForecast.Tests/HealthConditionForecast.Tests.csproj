@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HealthConditionForecast\HealthConditionForecast.csproj" />
+    <ProjectReference Include="..\HealthConditionForecast.csproj" />
   </ItemGroup>
 
   <ItemGroup>
