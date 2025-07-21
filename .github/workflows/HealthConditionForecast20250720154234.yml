@@ -8,7 +8,7 @@ env:
   AZURE_WEBAPP_PACKAGE_PATH: .\published
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 9.0.x
-  WORKING_DIRECTORY: .
+  WORKING_DIRECTORY: HealthConditionForecast
 jobs:
   build:
     runs-on: windows-latest
@@ -18,18 +18,27 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+    - name: Show root directory (for debugging)
+      run: dir
+    - name: Show HealthConditionForecast folder (for debugging)
+      run: dir HealthConditionForecast
     - name: Restore
       #run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
       run: dotnet restore HealthConditionForecast.sln
+      working-directory: HealthConditionForecast
     - name: Build
       #run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
       run: dotnet build HealthConditionForecast.sln --configuration Release --no-restore
+      working-directory: HealthConditionForecast
     - name: Test
       #run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
       #run: dotnet test "..\HealthConditionForecast.Tests\HealthConditionForecast.Tests.csproj" --no-build
-      run: dotnet test "HealthConditionForecast.sln" --no-build
+      run: dotnet test HealthConditionForecast.sln --configuration Release --no-build --verbosity normal
+      working-directory: HealthConditionForecast
     - name: Publish
-      run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
+      #run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
+      run: dotnet publish HealthConditionForecast.csproj --configuration ${{ env.CONFIGURATION }} --no-build --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+      working-directory: ${{ env.WORKING_DIRECTORY }}
     - name: Publish Artifacts
       uses: actions/upload-artifact@v4
       with:
