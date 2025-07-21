@@ -32,8 +32,8 @@ jobs:
       #run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
       run: dotnet build HealthConditionForecast/HealthConditionForecast.csproj --configuration Release --no-restore
       working-directory: .
-    #- name: Test
-      #run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
+    - name: Test
+      run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
       #run: dotnet test "..\HealthConditionForecast.Tests\HealthConditionForecast.Tests.csproj" --no-build
       #run: dotnet test HealthConditionForecast.sln --configuration Release --no-build --verbosity normal
       #working-directory: .
