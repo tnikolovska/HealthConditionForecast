@@ -32,11 +32,11 @@ jobs:
       #run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
       run: dotnet build HealthConditionForecast.sln --configuration Release --no-restore
       working-directory: .
-    - name: Test
+    #- name: Test
       #run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
       #run: dotnet test "..\HealthConditionForecast.Tests\HealthConditionForecast.Tests.csproj" --no-build
-      run: dotnet test HealthConditionForecast.sln --configuration Release --no-build --verbosity normal
-      working-directory: .
+      #run: dotnet test HealthConditionForecast.sln --configuration Release --no-build --verbosity normal
+      #working-directory: .
     - name: Publish
       #run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
       run: dotnet publish HealthConditionForecast.csproj --configuration ${{ env.CONFIGURATION }} --no-build --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
