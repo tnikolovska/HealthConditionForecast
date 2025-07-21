@@ -5,6 +5,8 @@ VisualStudioVersion = 17.14.36221.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthConditionForecast", "HealthConditionForecast.csproj", "{84D1E35F-0376-4480-BAEA-92D05F497E28}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthConditionForecast.Tests", "..\HealthConditionForecast.Tests\HealthConditionForecast.Tests.csproj", "{83678B95-A29F-BA92-DFBE-28134601A677}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{84D1E35F-0376-4480-BAEA-92D05F497E28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84D1E35F-0376-4480-BAEA-92D05F497E28}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84D1E35F-0376-4480-BAEA-92D05F497E28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83678B95-A29F-BA92-DFBE-28134601A677}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83678B95-A29F-BA92-DFBE-28134601A677}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83678B95-A29F-BA92-DFBE-28134601A677}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83678B95-A29F-BA92-DFBE-28134601A677}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
