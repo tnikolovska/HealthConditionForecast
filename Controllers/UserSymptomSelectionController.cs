@@ -192,9 +192,15 @@ namespace HealthConditionForecast.Controllers
 
              var userHealthCondition = await _context.UserHealthConditions
                  .FirstOrDefaultAsync(uhc => uhc.Id == userHealthConditionId);
-             var healthCondition = _context.HealthConditions
+            /*var healthCondition = _context.HealthConditions
+                .FirstOrDefaultAsync(h => h.Id == userHealthCondition.HealthConditionId);*/
+
+            var healthCondition = await _context.HealthConditions
                  .FirstOrDefaultAsync(h => h.Id == userHealthCondition.HealthConditionId);
 
+            if (healthCondition == null) {
+                return NotFound("HealthCondition not found for the provided userHealthCondition.");
+            }
              if (userHealthCondition == null)
              {
                  return NotFound("UserHealthCondition not found for the provided healthConditionId.");
@@ -212,14 +218,36 @@ namespace HealthConditionForecast.Controllers
                  selection.SinusSymptoms = new List<SinusSymptom>();
                  selection.ArthritisSymptoms = new List<ArthritisSymtom>();
 
-                 string conditionName = healthCondition.Result.Name;
+                 string conditionName = healthCondition.Name;
 
                  // Populate only the relevant symptom list
                  if (conditionName.Contains("Migraine", StringComparison.OrdinalIgnoreCase))
                  {
                      selection.MigraineSymptoms = await _context.MigraineSymptons
                          .Where(s => selectedSymptoms.Contains(s.Id)).ToListAsync();
-                     if ((selection.MigraineSymptoms.Count(m => m.Type == Models.MigraineType.BeforeHeadache)) > 0 ^ (selection.MigraineSymptoms.Count(m => m.Type == Models.MigraineType.MigraineWithAura)) > 0 ^ (selection.MigraineSymptoms.Count(m => m.Type == Models.MigraineType.DuringAttack)) > 0)
+                    if (selection.MigraineSymptoms == null || !selection.MigraineSymptoms.Any()) {
+
+                        validationMessage = "⚠️ No matching migraine symptoms found in the database.";
+                        TempData["ValidationMessage"] = validationMessage;
+                        return RedirectToAction("ValidationMessage", new { userHealthConditionId });
+
+                    }
+                    if (selection.MigraineSymptoms == null)
+                    {
+                        throw new Exception("MigraineSymptoms is null!");
+                    }
+                    foreach (var m in selection.MigraineSymptoms)
+                    {
+                        if (m == null)
+                        {
+                            throw new Exception("MigraineSympton entry is null!");
+                        }
+                        if (m.Type == null)
+                        {
+                            throw new Exception("MigraineSympton Type is null!");
+                        }
+                    }
+                    if ((selection.MigraineSymptoms.Count(m => m.Type == Models.MigraineType.BeforeHeadache)) > 0 ^ (selection.MigraineSymptoms.Count(m => m.Type == Models.MigraineType.MigraineWithAura)) > 0 ^ (selection.MigraineSymptoms.Count(m => m.Type == Models.MigraineType.DuringAttack)) > 0)
                      {
                          _context.UserSymptomSelections.Add(selection);
                          await _context.SaveChangesAsync();

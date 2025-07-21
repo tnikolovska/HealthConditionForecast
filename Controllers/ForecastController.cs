@@ -52,8 +52,8 @@ namespace HealthConditionForecast.Controllers
                     forecastList.Add(forecast);
                     System.Console.WriteLine(forecast.ToString());
                     id++;
-                    _context.Forecasts.Add(forecast);
-                    _context.SaveChanges();
+                    //_context.Forecasts.Add(forecast);
+                    //_context.SaveChanges();
                 }
             }
 
@@ -73,6 +73,11 @@ namespace HealthConditionForecast.Controllers
                     {
                         string forecastSearchResults = await response.Content.ReadAsStringAsync();
                         list = ParseJSON(forecastSearchResults);
+                        if (list.Any())
+                        {
+                            _context.Forecasts.AddRange(list);
+                            await _context.SaveChangesAsync();
+                        }
                     }
                     return View(list.ToList());
                 }
