@@ -1,0 +1,14 @@
+﻿@page
+@model HealthConditionForecast.Areas.Identity.Pages.Account.ConfirmEmailModel
+@{
+    ViewData["Title"] = "Email Confirmation";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (Model.StatusMessage != null)
+{
+    <div class="alert alert-info" role="alert">
+        @Model.StatusMessage
+    </div>
+}
