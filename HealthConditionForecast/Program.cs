@@ -1,6 +1,7 @@
 using HealthConditionForecast.Data;
 using HealthConditionForecast.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -44,6 +45,16 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 // Add services for Identity with roles
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
+
+//added code for email confirmation
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = true;
+});
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
 
 
 var app = builder.Build();
