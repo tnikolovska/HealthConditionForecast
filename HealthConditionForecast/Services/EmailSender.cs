@@ -30,7 +30,7 @@ using System.Threading.Tasks;
         {
             var emailToSend = new MimeMessage();
             //emailToSend.From.Add(MailboxAddress.Parse(_configuration["EmailSettings:From"]));
-            emailToSend.From.Add(new MailboxAddress("Teodora Nikolovska","nikolovskat95@gmail.com"));
+            emailToSend.From.Add(new MailboxAddress("Health Condition Forecast", "nikolovskat95@gmail.com"));
 
             emailToSend.To.Add(MailboxAddress.Parse(email));
             emailToSend.Subject = subject;
@@ -41,7 +41,9 @@ using System.Threading.Tasks;
             await smtp.AuthenticateAsync("nikolovskat95@gmail.com", "akmh wety wzjb plun");
             await smtp.SendAsync(emailToSend);
             await smtp.DisconnectAsync(true);
-        }
+
+        
+    }
     }
 
 
