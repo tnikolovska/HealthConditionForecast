@@ -25,6 +25,15 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()  // ?? Include Identi
     .AddDefaultTokenProviders()
     .AddDefaultUI();
 
+//enforce 20-minute inactivity timeout
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(20);  // total session timeout
+    options.SlidingExpiration = true;                   // reset timer on activity
+    options.LoginPath = "/Identity/Account/Login";      // optional: redirect path
+    //options.AccessDeniedPath = "/Identity/Account/AccessDenied"; // optional
+});
+
 
 // added new code
 
@@ -53,6 +62,20 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.SignIn.RequireConfirmedAccount = true;
 });
 builder.Services.AddTransient<IEmailSender, EmailSender>();
+
+//Make tokens time-limited (? 24 hours)
+builder.Services.Configure<DataProtectionTokenProviderOptions>(opt =>
+{
+    opt.TokenLifespan = TimeSpan.FromHours(24); // or less, e.g. 2 hours
+});
+
+//Add HTTP Client with Timeout 
+builder.Services.AddHttpClient("AccuWeather", client =>
+{
+    client.BaseAddress = new Uri("https://api.accuweather.com/");
+    client.Timeout = TimeSpan.FromSeconds(5); // Total timeout per request
+});
+
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
 
