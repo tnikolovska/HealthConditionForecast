@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -19,9 +20,11 @@ namespace HealthConditionForecast.Controllers
     public class UserSymptomSelectionController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<UserSymptomSelectionController> _logger;
 
-        public UserSymptomSelectionController(ApplicationDbContext context)
+        public UserSymptomSelectionController(ILogger<UserSymptomSelectionController> logger, ApplicationDbContext context)
         {
+            _logger = logger;
             _context = context;
         }
         [Authorize(Roles = "Admin,User")]
@@ -81,6 +84,7 @@ namespace HealthConditionForecast.Controllers
         [Authorize(Roles = "Admin,User")]
         public IActionResult SelectSymptoms(int userHealthConditionId)
         {
+            var stopwatch = Stopwatch.StartNew();
             UserHealthCondition userHealthCondition = _context.UserHealthConditions
                 .FirstOrDefault(uhc => uhc.Id == userHealthConditionId);
             // Find the selected health condition to check its type (Name or some discriminator)
@@ -125,7 +129,11 @@ namespace HealthConditionForecast.Controllers
                 ViewBag.Symptoms = new MultiSelectList(Enumerable.Empty<object>());
                 ViewBag.ConditionType = "None";
             }
-
+            stopwatch.Stop();
+            if (stopwatch.ElapsedMilliseconds > 1500)
+            {
+                _logger.LogWarning("SelectSymptoms (GET/POST) exceeded 1.5s: {0} ms", stopwatch.ElapsedMilliseconds);
+            }
             return View();
         }
 
@@ -183,6 +191,7 @@ namespace HealthConditionForecast.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SelectSymptoms(int userHealthConditionId, List<long> selectedSymptoms)
         {
+            var stopwatch = Stopwatch.StartNew();
             string validationMessage = "";
 
              if (selectedSymptoms == null || selectedSymptoms.Count == 0)
@@ -295,7 +304,12 @@ namespace HealthConditionForecast.Controllers
                      else {
                          validationMessage = "⚠️ Please select at least one arthritis symptom.";
                          TempData["ValidationMessage"] = validationMessage;
-                         return RedirectToAction("ValidationMessage", new { userHealthConditionId = userHealthConditionId });
+                        stopwatch.Stop();
+                        if (stopwatch.ElapsedMilliseconds > 1500)
+                        {
+                            _logger.LogWarning("SelectSymptoms (GET/POST) exceeded 1.5s: {0} ms", stopwatch.ElapsedMilliseconds);
+                        }
+                        return RedirectToAction("ValidationMessage", new { userHealthConditionId = userHealthConditionId });
                      }
 
                  }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 
 namespace HealthConditionForecast.Controllers
 {
@@ -18,6 +19,7 @@ namespace HealthConditionForecast.Controllers
         { 
             _context = context;
             _httpClient = new HttpClient();
+           
         }
         public List<Forecast> ParseJSON(string forecastSearchResults)
         {
@@ -60,8 +62,8 @@ namespace HealthConditionForecast.Controllers
             return forecastList;
         }
         [Authorize(Roles = "Admin,User")]
-        
-        public async Task<IActionResult> ForecastMigraine() 
+
+        /*public async Task<IActionResult> ForecastMigraine() 
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -69,6 +71,7 @@ namespace HealthConditionForecast.Controllers
                 {
                     List<Forecast> list = new List<Forecast>();
                     HttpResponseMessage response = await _httpClient.GetAsync("http://dataservice.accuweather.com/indices/v1/daily/5day/227397/27?apikey=OeYyggfEf9RAfVh8RArY7paEcdyI8Kqz");
+
                     if (response.IsSuccessStatusCode)
                     {
                         string forecastSearchResults = await response.Content.ReadAsStringAsync();
@@ -86,10 +89,86 @@ namespace HealthConditionForecast.Controllers
             else
                 return Redirect("/Identity/Account/Login");
 
+        }*/
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client)]
+        public async Task<IActionResult> ForecastMigraine()
+        {
+            if (!User.Identity.IsAuthenticated)
+                return Redirect("/Identity/Account/Login");
+
+            if (TempData["CanShowForecast"] as string != "yes")
+                return RedirectToAction("Create", "UserHealthCondition");
+
+            List<Forecast> list = new List<Forecast>();
+            string apiUrl = "http://dataservice.accuweather.com/indices/v1/daily/5day/227397/27?apikey=OeYyggfEf9RAfVh8RArY7paEcdyI8Kqz";
+
+            var stopwatch = new Stopwatch();
+            int retryCount = 0;
+            const int maxRetries = 1;
+
+            while (retryCount <= maxRetries)
+            {
+                stopwatch.Restart();
+
+                try
+                {
+                    _httpClient.Timeout = TimeSpan.FromSeconds(5); // Fail if it takes longer than 5s
+
+                    HttpResponseMessage response = await _httpClient.GetAsync(apiUrl);
+                    stopwatch.Stop();
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string forecastSearchResults = await response.Content.ReadAsStringAsync();
+                        list = ParseJSON(forecastSearchResults);
+
+                        if (list.Any())
+                        {
+                            _context.Forecasts.AddRange(list);
+                            await _context.SaveChangesAsync();
+                        }
+
+                        if (stopwatch.ElapsedMilliseconds > 2000)
+                        {
+                            ViewBag.Message = "⚠️ Forecast loaded slowly (" + stopwatch.ElapsedMilliseconds + "ms).";
+                        }
+
+                        return View(list);
+                    }
+                    else
+                    {
+                        ViewBag.Message = "⚠️ Forecast service returned an error.";
+                    }
+                }
+                catch (TaskCanceledException)
+                {
+                    stopwatch.Stop();
+                    ViewBag.Message = "⚠️ Forecast request timed out after 5 seconds.";
+                }
+                catch (Exception ex)
+                {
+                    stopwatch.Stop();
+                    ViewBag.Message = "⚠️ An unexpected error occurred: " + ex.Message;
+                }
+
+                retryCount++;
+                if (retryCount > maxRetries)
+                {
+                    break;
+                }
+
+                // Optional: small delay before retrying
+                await Task.Delay(500);
+            }
+
+            return View(list);
         }
+
+
+
         [Authorize(Roles = "Admin,User")]
 
-        public async Task<IActionResult> ForecastSinus()
+        /*public async Task<IActionResult> ForecastSinus()
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -109,30 +188,160 @@ namespace HealthConditionForecast.Controllers
             }
             else
                 return Redirect("/Identity/Account/Login");
-        }
-        [Authorize(Roles = "Admin,User")]
-
-        public async Task<IActionResult> ForecastArthritis()
+        }*/
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client)]
+        public async Task<IActionResult> ForecastSinus()
         {
-            if (User.Identity.IsAuthenticated)
+            if (!User.Identity.IsAuthenticated)
+                return Redirect("/Identity/Account/Login");
+
+            if (TempData["CanShowForecast"] as string != "yes")
+                return RedirectToAction("Create", "UserHealthCondition");
+
+            List<Forecast> list = new List<Forecast>();
+            string apiUrl = "http://dataservice.accuweather.com/indices/v1/daily/5day/227397/30?apikey=OeYyggfEf9RAfVh8RArY7paEcdyI8Kqz";
+
+            var stopwatch = new Stopwatch();
+            int retryCount = 0;
+            const int maxRetries = 1;
+
+            while (retryCount <= maxRetries)
             {
-                if (TempData["CanShowForecast"] as string == "yes")
+                stopwatch.Restart();
+
+                try
                 {
-                    List<Forecast> list = new List<Forecast>();
-                    HttpResponseMessage response = await _httpClient.GetAsync("http://dataservice.accuweather.com/indices/v1/daily/5day/227397/21?apikey=OeYyggfEf9RAfVh8RArY7paEcdyI8Kqz");
+                    _httpClient.Timeout = TimeSpan.FromSeconds(5);
+
+                    HttpResponseMessage response = await _httpClient.GetAsync(apiUrl);
+                    stopwatch.Stop();
+
                     if (response.IsSuccessStatusCode)
                     {
                         string forecastSearchResults = await response.Content.ReadAsStringAsync();
                         list = ParseJSON(forecastSearchResults);
 
+                        if (stopwatch.ElapsedMilliseconds > 2000)
+                        {
+                            ViewBag.Message = $"⚠️ Forecast loaded slowly ({stopwatch.ElapsedMilliseconds} ms).";
+                        }
+
+                        return View(list);
                     }
-                    return View(list.ToList());
+                    else
+                    {
+                        ViewBag.Message = "⚠️ Forecast service returned an error.";
+                    }
                 }
-                else return RedirectToAction("Create", "UserHealthCondition");
+                catch (TaskCanceledException)
+                {
+                    stopwatch.Stop();
+                    ViewBag.Message = "⚠️ Forecast request timed out after 5 seconds.";
+                }
+                catch (Exception ex)
+                {
+                    stopwatch.Stop();
+                    ViewBag.Message = "⚠️ An unexpected error occurred: " + ex.Message;
+                }
+
+                retryCount++;
+                if (retryCount > maxRetries)
+                    break;
+
+                await Task.Delay(500); // Wait before retry
             }
-            else
-                return Redirect("/Identity/Account/Login");
+
+            return View(list);
         }
+
+        [Authorize(Roles = "Admin,User")]
+
+        /* public async Task<IActionResult> ForecastArthritis()
+         {
+             if (User.Identity.IsAuthenticated)
+             {
+                 if (TempData["CanShowForecast"] as string == "yes")
+                 {
+                     List<Forecast> list = new List<Forecast>();
+                     HttpResponseMessage response = await _httpClient.GetAsync("http://dataservice.accuweather.com/indices/v1/daily/5day/227397/21?apikey=OeYyggfEf9RAfVh8RArY7paEcdyI8Kqz");
+                     if (response.IsSuccessStatusCode)
+                     {
+                         string forecastSearchResults = await response.Content.ReadAsStringAsync();
+                         list = ParseJSON(forecastSearchResults);
+
+                     }
+                     return View(list.ToList());
+                 }
+                 else return RedirectToAction("Create", "UserHealthCondition");
+             }
+             else
+                 return Redirect("/Identity/Account/Login");
+         }*/
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client)]
+        public async Task<IActionResult> ForecastArthritis()
+        {
+            if (!User.Identity.IsAuthenticated)
+                return Redirect("/Identity/Account/Login");
+
+            if (TempData["CanShowForecast"] as string != "yes")
+                return RedirectToAction("Create", "UserHealthCondition");
+
+            List<Forecast> list = new List<Forecast>();
+            string apiUrl = "http://dataservice.accuweather.com/indices/v1/daily/5day/227397/21?apikey=OeYyggfEf9RAfVh8RArY7paEcdyI8Kqz";
+
+            var stopwatch = new Stopwatch();
+            int retryCount = 0;
+            const int maxRetries = 1;
+
+            while (retryCount <= maxRetries)
+            {
+                stopwatch.Restart();
+
+                try
+                {
+                    _httpClient.Timeout = TimeSpan.FromSeconds(5);
+
+                    HttpResponseMessage response = await _httpClient.GetAsync(apiUrl);
+                    stopwatch.Stop();
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string forecastSearchResults = await response.Content.ReadAsStringAsync();
+                        list = ParseJSON(forecastSearchResults);
+
+                        if (stopwatch.ElapsedMilliseconds > 2000)
+                        {
+                            ViewBag.Message = $"⚠️ Forecast loaded slowly ({stopwatch.ElapsedMilliseconds} ms).";
+                        }
+
+                        return View(list);
+                    }
+                    else
+                    {
+                        ViewBag.Message = "⚠️ Forecast service returned an error.";
+                    }
+                }
+                catch (TaskCanceledException)
+                {
+                    stopwatch.Stop();
+                    ViewBag.Message = "⚠️ Forecast request timed out after 5 seconds.";
+                }
+                catch (Exception ex)
+                {
+                    stopwatch.Stop();
+                    ViewBag.Message = "⚠️ An unexpected error occurred: " + ex.Message;
+                }
+
+                retryCount++;
+                if (retryCount > maxRetries)
+                    break;
+
+                await Task.Delay(500); // Optional delay before retry
+            }
+
+            return View(list);
+        }
+
         [Authorize(Roles = "Admin")]
         // GET: ForecastController
         public async Task<IActionResult> Index()
