@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace HealthConditionForecast.Tests
     public class UserSymptomSelectionControllerTests
     {
         private readonly ApplicationDbContext _context;
+        ILogger<UserSymptomSelectionController> logger;
         private readonly UserSymptomSelectionController _controller;
         private const string TestUserId = "user-123";
 
@@ -44,7 +46,7 @@ namespace HealthConditionForecast.Tests
             );
             _context.SaveChanges();
 
-            _controller = new UserSymptomSelectionController(_context);
+            _controller = new UserSymptomSelectionController(logger,_context);
             var user = new ClaimsPrincipal(new ClaimsIdentity(new[]
             {
             new Claim(ClaimTypes.NameIdentifier, TestUserId),
@@ -136,7 +138,7 @@ namespace HealthConditionForecast.Tests
             context.MigraineSymptons.Add(symptom);
             await context.SaveChangesAsync();
 
-            var controller = new UserSymptomSelectionController(context);
+            var controller = new UserSymptomSelectionController(logger,context);
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext()
