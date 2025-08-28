@@ -78,6 +78,9 @@ namespace HealthConditionForecast.Controllers
                     ViewData["MigraineType"] = new SelectList(Enum.GetValues(typeof(MigraineType)), symptom.Type);
                     return View(symptom);
                 }
+                ViewData["HealthConditionId"] = new SelectList(_context.HealthConditions, "Id", "Name", symptom.HealthConditionId);
+                //ViewData["HealthConditionId"] = healthConditionId;
+                ViewData["MigraineType"] = new SelectList(Enum.GetValues(typeof(MigraineType)), symptom.Type);
                 return View(symptom);
 
             }
